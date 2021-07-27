@@ -1,0 +1,133 @@
+$font-size-base: 16px;
+
+$form-box-maxwidth: 100%;
+$form-bp: 1200px;
+
+$flextable-font-family: "Fira Code", Menlo, Monaco, Consolas, "Andale Mono", "Courier New", monospace;
+$flextable-font-size: 90%;
+
+@import '../../../../../../scss/fw/_fw-wordpress';
+
+/*
+fieldset {
+    display: inline;
+}
+*/
+
+.form-container .form-box form {
+
+    .sect {
+        border: 1px solid black;
+        padding: 1em;
+        border-radius: 4px;
+        margin-bottom: 1em;
+    }
+
+    .formerror {
+        color: red;
+        font-weight: bold;
+        margin-bottom: 0.5em;
+    }
+
+
+}
+
+.topmsg {
+    
+    margin: 0.5em;
+
+    .topmsg_msg, .topmsg_error {
+        font-size: 110%;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid green;
+        padding: 0.25em;
+        border-radius: 4px;
+    }
+
+    .topmsg_error {
+        color: red;
+        border-color: red;
+    }
+}
+
+.results {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+
+.lookup-results {
+    .lookup-key {
+        display: inline-block;
+        margin-right: 1em;
+        width: 10em;
+        font-weight: bold;
+        text-align: right;
+    }
+}
+
+pre.spam {
+    line-height: 1;
+}
+
+tr.dummy {
+    font-style: italic;
+    color: rgb(156, 158, 161);
+}
+
+.elapsed {
+    margin-top: 3em;
+    p {
+        font-size: 70%;
+        text-align: center;
+        margin: 0 auto;
+    }
+}
+
+
+table#log-table {
+    font-size: 85%;
+
+    .icon.plus, .icon.minus, .icon.blank {
+        padding-right: 0.5em;
+    }
+
+    .icon.minus {
+        display: none;
+    }
+
+    .status-allow {
+        background-color: rgba(green, 0.15);
+    }
+
+    .status-block, .status-error {
+        background-color: rgba(red, 0.15);
+    }
+
+    .status-info {
+        background-color: rgba(orange, 0.15);
+    }
+
+    .subrow {
+        display: none;
+
+        .icon {
+            padding-right: 0.25em;
+        }
+    }
+
+    .newrec {
+        font-weight: bold;
+        //background-color: rgba(66, 135, 245, 30%);
+    }
+
+    .ipseen {
+        color: red;
+    }
+
+    .dummy {
+        font-style: italic;
+        color: grey;
+    }
+}

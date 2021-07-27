@@ -1,0 +1,5 @@
+dbstore/
+!dbstore/.gitkeep
+logs/
+.env
+vendor/

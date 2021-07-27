@@ -1,0 +1,661 @@
+@charset "UTF-8";
+.form-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.form-container .form-box {
+  width: 100%;
+  max-width: 100%;
+  padding: 15px 7px;
+  box-sizing: border-box;
+}
+.form-container .form-box .formerror {
+  text-align: center;
+  font-weight: bold;
+}
+.form-container .form-box form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.45;
+}
+.form-container .form-box form fieldset {
+  border: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+.form-container .form-box form span.cbset {
+  display: inline-block;
+  padding: 10px 5px;
+  margin-top: 5px;
+}
+.form-container .form-box form span.cbset label.hdr {
+  width: 100%;
+}
+.form-container .form-box form span.cbset fieldset {
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+.form-container .form-box form span.cbset fieldset input {
+  padding: 10px 5px;
+  padding-top: 0;
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  transform: scale(1.2);
+}
+.form-container .form-box form span.cbset fieldset label {
+  display: inline;
+  margin-right: 1em;
+}
+.form-container .form-box form fieldset.radio {
+  display: inline-block;
+  padding: 10px 5px;
+  width: 100%;
+}
+.form-container .form-box form fieldset.radio input {
+  display: inline-block;
+  width: auto;
+}
+.form-container .form-box form fieldset.radio label {
+  display: inline;
+}
+.form-container .form-box form fieldset.radio.horizontal {
+  display: block;
+  padding: 10px 5px;
+  width: 100%;
+}
+.form-container .form-box form fieldset.radio.horizontal input {
+  display: inline;
+  width: auto;
+}
+.form-container .form-box form label, .form-container .form-box form .label {
+  display: inline-block;
+  margin: 0.5rem 0;
+  font-size: 85%;
+}
+.form-container .form-box form .label {
+  display: block;
+}
+.form-container .form-box form input, .form-container .form-box form select {
+  display: block;
+  width: 100%;
+  outline: 0;
+  box-sizing: border-box;
+  border: 0.25px solid;
+  border-radius: 4px;
+  padding: 10px 5px;
+  line-height: 1.45;
+}
+.form-container .form-box form input::placeholder, .form-container .form-box form select::placeholder {
+  font-size: 80%;
+  font-weight: 100;
+  font-style: italic;
+}
+.form-container .form-box form input:focus, .form-container .form-box form select:focus {
+  border: 1px solid;
+}
+.form-container .form-box form input[type=radio] {
+  width: auto;
+}
+.form-container .form-box form input[type=radio] + label {
+  padding: 10px 5px;
+  border-radius: 4px;
+}
+.form-container .form-box form input[type=radio]:focus + label {
+  border: 1px solid;
+}
+.form-container .form-box form select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  padding: 10px 5px;
+  width: 100%;
+  display: inline;
+  padding-right: 1.5em;
+}
+.form-container .form-box form .select-wrapper {
+  overflow: hidden;
+  display: block;
+}
+.form-container .form-box form .select-wrapper:after {
+  position: absolute;
+  content: "▼";
+  margin-left: -1em;
+  margin-top: 0.3em;
+  cursor: pointer;
+  pointer-events: none;
+}
+.form-container .form-box form .required {
+  color: #B0092D;
+}
+.form-container .form-box form textarea {
+  width: 100%;
+  padding: 10px;
+  resize: none;
+  min-height: 10ch;
+  max-height: 120ch;
+}
+.form-container .form-box form textarea:focus {
+  border: 1px solid;
+}
+.form-container .form-box form div.two-columns,
+.form-container .form-box form div.three-columns,
+.form-container .form-box form div.four-columns {
+  display: grid;
+  grid-template-columns: 100%;
+}
+.form-container .form-box form div.two-columns-always {
+  display: grid;
+  grid-template-columns: 48% 48%;
+  grid-column-gap: 2%;
+}
+.form-container .form-box form div.three-columns-always {
+  display: grid;
+  grid-template-columns: 32% 32% 32%;
+  grid-column-gap: 2%;
+}
+.form-container .form-box form div.four-columns-always {
+  display: grid;
+  grid-template-columns: 23.5% 23.5% 23.5% 23.5%;
+  grid-column-gap: 2%;
+}
+.form-container .form-box form span.duowrap {
+  display: flex;
+}
+.form-container .form-box form span.duowrap input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-container .form-box form span.duowrap select {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-container .form-box form button {
+  cursor: pointer;
+  border: 1px solid;
+  border-radius: 4px;
+  outline: none;
+  width: 100%;
+  text-align: center;
+  padding: 12px;
+  margin-top: 15px;
+}
+.form-container .form-box form button:focus {
+  border: 1px solid;
+}
+.form-container .form-box form button:active {
+  box-shadow: none;
+}
+
+@media screen and (min-width: 1200px) {
+  .form-container .form-box form div.two-columns {
+    grid-template-columns: 48% 48%;
+    grid-column-gap: 2%;
+  }
+
+  .form-container .form-box form div.three-columns {
+    grid-template-columns: 32% 32% 32%;
+    grid-column-gap: 2%;
+  }
+
+  .form-container .form-box form div.four-columns {
+    grid-template-columns: 23.5% 23.5% 23.5% 23.5%;
+    grid-column-gap: 2%;
+  }
+}
+table.tablemaker {
+  border-collapse: collapse;
+  width: 98%;
+  table-layout: auto;
+}
+table.tablemaker tr th, table.tablemaker tr td {
+  text-align: left;
+  padding: 0 0.25em 0 0.25em;
+}
+table.tablemaker tr.header {
+  border-bottom: 1px solid black;
+}
+table.tablemaker tr.subrow {
+  width: 100%;
+}
+table.tablemaker tr.subrow td.subrowcell {
+  width: 100%;
+}
+table.tablemaker.vertical {
+  width: 100%;
+}
+table.tablemaker.vertical th {
+  text-align: right;
+  width: 20%;
+  vertical-align: top;
+}
+table.tablemaker.vertical td {
+  vertical-align: top;
+  width: auto;
+}
+table.tablemaker .hide1, table.tablemaker .hide2 {
+  display: none;
+}
+table.tablemaker img.icon {
+  width: 16px;
+  height: 16px;
+}
+table.tablemaker .size-1 {
+  width: 1%;
+}
+table.tablemaker .size-2 {
+  width: 2%;
+}
+table.tablemaker .size-3 {
+  width: 3%;
+}
+table.tablemaker .size-4 {
+  width: 4%;
+}
+table.tablemaker .size-5 {
+  width: 5%;
+}
+table.tablemaker .size-6 {
+  width: 6%;
+}
+table.tablemaker .size-7 {
+  width: 7%;
+}
+table.tablemaker .size-8 {
+  width: 8%;
+}
+table.tablemaker .size-9 {
+  width: 9%;
+}
+table.tablemaker .size-10 {
+  width: 10%;
+}
+table.tablemaker .size-11 {
+  width: 11%;
+}
+table.tablemaker .size-12 {
+  width: 12%;
+}
+table.tablemaker .size-13 {
+  width: 13%;
+}
+table.tablemaker .size-14 {
+  width: 14%;
+}
+table.tablemaker .size-15 {
+  width: 15%;
+}
+table.tablemaker .size-16 {
+  width: 16%;
+}
+table.tablemaker .size-17 {
+  width: 17%;
+}
+table.tablemaker .size-18 {
+  width: 18%;
+}
+table.tablemaker .size-19 {
+  width: 19%;
+}
+table.tablemaker .size-20 {
+  width: 20%;
+}
+table.tablemaker .size-21 {
+  width: 21%;
+}
+table.tablemaker .size-22 {
+  width: 22%;
+}
+table.tablemaker .size-23 {
+  width: 23%;
+}
+table.tablemaker .size-24 {
+  width: 24%;
+}
+table.tablemaker .size-25 {
+  width: 25%;
+}
+table.tablemaker .size-26 {
+  width: 26%;
+}
+table.tablemaker .size-27 {
+  width: 27%;
+}
+table.tablemaker .size-28 {
+  width: 28%;
+}
+table.tablemaker .size-29 {
+  width: 29%;
+}
+table.tablemaker .size-30 {
+  width: 30%;
+}
+table.tablemaker .size-31 {
+  width: 31%;
+}
+table.tablemaker .size-32 {
+  width: 32%;
+}
+table.tablemaker .size-33 {
+  width: 33%;
+}
+table.tablemaker .size-34 {
+  width: 34%;
+}
+table.tablemaker .size-35 {
+  width: 35%;
+}
+table.tablemaker .size-36 {
+  width: 36%;
+}
+table.tablemaker .size-37 {
+  width: 37%;
+}
+table.tablemaker .size-38 {
+  width: 38%;
+}
+table.tablemaker .size-39 {
+  width: 39%;
+}
+table.tablemaker .size-40 {
+  width: 40%;
+}
+table.tablemaker .size-41 {
+  width: 41%;
+}
+table.tablemaker .size-42 {
+  width: 42%;
+}
+table.tablemaker .size-43 {
+  width: 43%;
+}
+table.tablemaker .size-44 {
+  width: 44%;
+}
+table.tablemaker .size-45 {
+  width: 45%;
+}
+table.tablemaker .size-46 {
+  width: 46%;
+}
+table.tablemaker .size-47 {
+  width: 47%;
+}
+table.tablemaker .size-48 {
+  width: 48%;
+}
+table.tablemaker .size-49 {
+  width: 49%;
+}
+table.tablemaker .size-50 {
+  width: 50%;
+}
+table.tablemaker .size-51 {
+  width: 51%;
+}
+table.tablemaker .size-52 {
+  width: 52%;
+}
+table.tablemaker .size-53 {
+  width: 53%;
+}
+table.tablemaker .size-54 {
+  width: 54%;
+}
+table.tablemaker .size-55 {
+  width: 55%;
+}
+table.tablemaker .size-56 {
+  width: 56%;
+}
+table.tablemaker .size-57 {
+  width: 57%;
+}
+table.tablemaker .size-58 {
+  width: 58%;
+}
+table.tablemaker .size-59 {
+  width: 59%;
+}
+table.tablemaker .size-60 {
+  width: 60%;
+}
+table.tablemaker .size-61 {
+  width: 61%;
+}
+table.tablemaker .size-62 {
+  width: 62%;
+}
+table.tablemaker .size-63 {
+  width: 63%;
+}
+table.tablemaker .size-64 {
+  width: 64%;
+}
+table.tablemaker .size-65 {
+  width: 65%;
+}
+table.tablemaker .size-66 {
+  width: 66%;
+}
+table.tablemaker .size-67 {
+  width: 67%;
+}
+table.tablemaker .size-68 {
+  width: 68%;
+}
+table.tablemaker .size-69 {
+  width: 69%;
+}
+table.tablemaker .size-70 {
+  width: 70%;
+}
+table.tablemaker .size-71 {
+  width: 71%;
+}
+table.tablemaker .size-72 {
+  width: 72%;
+}
+table.tablemaker .size-73 {
+  width: 73%;
+}
+table.tablemaker .size-74 {
+  width: 74%;
+}
+table.tablemaker .size-75 {
+  width: 75%;
+}
+table.tablemaker .size-76 {
+  width: 76%;
+}
+table.tablemaker .size-77 {
+  width: 77%;
+}
+table.tablemaker .size-78 {
+  width: 78%;
+}
+table.tablemaker .size-79 {
+  width: 79%;
+}
+table.tablemaker .size-80 {
+  width: 80%;
+}
+table.tablemaker .size-81 {
+  width: 81%;
+}
+table.tablemaker .size-82 {
+  width: 82%;
+}
+table.tablemaker .size-83 {
+  width: 83%;
+}
+table.tablemaker .size-84 {
+  width: 84%;
+}
+table.tablemaker .size-85 {
+  width: 85%;
+}
+table.tablemaker .size-86 {
+  width: 86%;
+}
+table.tablemaker .size-87 {
+  width: 87%;
+}
+table.tablemaker .size-88 {
+  width: 88%;
+}
+table.tablemaker .size-89 {
+  width: 89%;
+}
+table.tablemaker .size-90 {
+  width: 90%;
+}
+table.tablemaker .size-91 {
+  width: 91%;
+}
+table.tablemaker .size-92 {
+  width: 92%;
+}
+table.tablemaker .size-93 {
+  width: 93%;
+}
+table.tablemaker .size-94 {
+  width: 94%;
+}
+table.tablemaker .size-95 {
+  width: 95%;
+}
+table.tablemaker .size-96 {
+  width: 96%;
+}
+table.tablemaker .size-97 {
+  width: 97%;
+}
+table.tablemaker .size-98 {
+  width: 98%;
+}
+table.tablemaker .size-99 {
+  width: 99%;
+}
+table.tablemaker .size-100 {
+  width: 100%;
+}
+
+@media screen and (min-width: 37.5em) {
+  table.tablemaker .hide1 {
+    display: inline;
+  }
+}
+@media screen and (min-width: 62em) {
+  table.tablemaker .hide2 {
+    display: inline;
+  }
+}
+/*
+fieldset {
+    display: inline;
+}
+*/
+.form-container .form-box form .sect {
+  border: 1px solid black;
+  padding: 1em;
+  border-radius: 4px;
+  margin-bottom: 1em;
+}
+.form-container .form-box form .formerror {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.topmsg {
+  margin: 0.5em;
+}
+.topmsg .topmsg_msg, .topmsg .topmsg_error {
+  font-size: 110%;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid green;
+  padding: 0.25em;
+  border-radius: 4px;
+}
+.topmsg .topmsg_error {
+  color: red;
+  border-color: red;
+}
+
+.results {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.lookup-results .lookup-key {
+  display: inline-block;
+  margin-right: 1em;
+  width: 10em;
+  font-weight: bold;
+  text-align: right;
+}
+
+pre.spam {
+  line-height: 1;
+}
+
+tr.dummy {
+  font-style: italic;
+  color: #9c9ea1;
+}
+
+.elapsed {
+  margin-top: 3em;
+}
+.elapsed p {
+  font-size: 70%;
+  text-align: center;
+  margin: 0 auto;
+}
+
+table#log-table {
+  font-size: 85%;
+}
+table#log-table .icon.plus, table#log-table .icon.minus, table#log-table .icon.blank {
+  padding-right: 0.5em;
+}
+table#log-table .icon.minus {
+  display: none;
+}
+table#log-table .status-allow {
+  background-color: rgba(0, 128, 0, 0.15);
+}
+table#log-table .status-block, table#log-table .status-error {
+  background-color: rgba(255, 0, 0, 0.15);
+}
+table#log-table .status-info {
+  background-color: rgba(255, 165, 0, 0.15);
+}
+table#log-table .subrow {
+  display: none;
+}
+table#log-table .subrow .icon {
+  padding-right: 0.25em;
+}
+table#log-table .newrec {
+  font-weight: bold;
+}
+table#log-table .ipseen {
+  color: red;
+}
+table#log-table .dummy {
+  font-style: italic;
+  color: grey;
+}
