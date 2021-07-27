@@ -27,7 +27,9 @@
     <?php endif ?>
 </div>
 
-<?= $tm->render() ?>
+<?php if (!is_null($tm)): ?>
+    <?= $tm->render() ?>    
+<?php endif ?>
 
 <div class="elapsed">
     <p>Rendered in <?= $elapsed ?> seconds.</p>
