@@ -153,13 +153,6 @@ class UserMode extends PluginUser implements PluginUserInterface
     {
         $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_CONTACT);
 
-        // Get the CF7 data.
-        //$wpcf = \WPCF7_ContactForm::get_current();
-
-        //$abort = true;
-        //error_log(print_r($contact_form, true));
-        //error_log(print_r($submission, true));
-
         $pd = $submission->get_posted_data();
 
         $checkBlock['username'] = $pd['your-name'];
@@ -177,11 +170,5 @@ class UserMode extends PluginUser implements PluginUserInterface
             $abort = true;
         }
 
-        //var_dump($submission);
-        //var_dump($contact_form);
-        //\wp_die('here');
-
-        // Return possibly update structure.
-        //return false;
     }
 }

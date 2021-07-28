@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\PageProcessor\AddRulePageProcessor;
+use App\PageProcessor\ManageRulesPageProcessor;
 use App\PageProcessor\LogPageProcessor;
 use App\PageProcessor\LookupIpPageProcessor;
 use App\PageProcessor\OptionsPageProcessor;
@@ -83,46 +84,20 @@ class AdminMode extends PluginAdmin implements PluginAdminInterface
         );
         \add_submenu_page(
             $this->cfg->slug,
+            "SpamZap2 Manage Rules",
+            "Manage Rules",
+            'manage_options',
+            $this->cfg->slug . "-manage-rules",
+            array($this, 'adminPageManageRules')
+        );
+        \add_submenu_page(
+            $this->cfg->slug,
             "SpamZap2 Lookup IP",
             "Lookup IP",
             'manage_options',
             $this->cfg->slug . "-lookup-ip",
             array($this, 'adminPageLookupIp')
         );
-        /*
-        add_submenu_page(
-            $this->slug,
-            "Spam Zap Ban Lists",
-            "Ban Lists",
-            'manage_options',
-            $this->slug,
-            array($this, 'adminOptionsPageBanLists')
-        );
-        add_submenu_page(
-            $this->slug,
-            "Spam Zap Options",
-            "Options",
-            'manage_options',
-            $this->slug . "-options",
-            array($this, 'adminOptionsPageOptions')
-        );
-        add_submenu_page(
-            $this->slug,
-            "Spam Zap Tests",
-            "Tests",
-            'manage_options',
-            $this->slug . "-tests",
-            array($this, 'adminOptionsPageTests')
-        );
-        add_submenu_page(
-            $this->slug,
-            "Spam Zap Logs",
-            "Logs",
-            'manage_options',
-            $this->slug . "-logs",
-            array($this, 'adminOptionsPageNewLogs')
-        );
-        */
     }
 
     /**
@@ -172,6 +147,23 @@ class AdminMode extends PluginAdmin implements PluginAdminInterface
         }
 
         $pp = new AddRulePageProcessor($this);
+        $pp->process();
+
+    }
+
+    /**
+     * Manage rules page.
+     * 
+     * @return  
+     */
+    public function adminPageManageRules()
+    {
+        // Check user is authorised.
+        if (!\current_user_can('manage_options')) {
+            \wp_die($this->__('You do not have sufficient permissions to access this page.'));
+        }
+
+        $pp = new ManageRulesPageProcessor($this);
         $pp->process();
 
     }

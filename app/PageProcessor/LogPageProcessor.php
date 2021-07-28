@@ -26,54 +26,6 @@ use GreenFedora\Table\Table;
  */
 class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInterface
 {
-
-    /**
-     * Create the table to contain all the data.
-     * 
-     * @return
-     */
-    /*
-    protected function createTable(): TableInterface
-    {
-        $table = new Table('log-table', 'flextable stripe spamzap2 log');
-
-        $table->addColumn('dt', 'Date/Time', 'size-15 left')
-            ->addColumn('type', 'T', 'size-2 left')
-            ->addColumn('ip', 'IP', 'size-12 left')
-            ->addColumn('username', 'User', 'size-10 left')
-            ->addColumn('email', 'Email', 'size-21 left breakword hide2')
-            ->addColumn('matchtype', 'Match Type', 'size-12 left')
-            ->addColumn('matchval', 'Match Val', 'size-28 left');
-            //->addColumn('status', 'Status', 'size-8 left hide2');
-
-        $table->addSubRow('sr', 'subrow');
-        $table->getSubRow('sr')
-            ->addColumn('username2', 'Username')
-            ->addColumn('email2', 'Email')
-            ->addColumn('emaildomain', 'Email Domain')
-            ->addColumn('rawemaildomain', 'Raw Email Domain')
-            ->addColumn('blank1', '')
-            ->addColumn('commentauthorurl', 'Author URL')
-            ->addColumn('commentauthordom', 'Author Domain')
-            ->addColumn('commentposttitle', 'Post Title')
-            ->addColumn('commentpostid', 'Post ID')
-            ->addColumn('comment', 'Comment')
-            ->addColumn('commentdomains', 'Comment Domains')
-            ->addColumn('blank2', '')
-            ->addColumn('ip2', 'IP')
-            ->addColumn('seen', 'Seen (IP/24)')
-            ->addColumn('cidrs', 'CIDR(s)')
-            ->addColumn('name', 'Name')
-            ->addColumn('netname', 'Network Name')
-            ->addColumn('country', 'Country')
-            ->addColumn('address', 'Address')
-            ->addColumn('domain', 'Domain')
-            ->addColumn('networkstatus', 'Network Status');
-
-        return $table;
-    }
-    */
-
     /**
      * Create the log table.
      * 
@@ -129,30 +81,6 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
 
     }
 
-    /*
-    protected function doTest()
-    {
-        $inner = new TableMaker(['class' => 'subtable'], 'vertical');
-        $inner->thead()->addColumn('one')->addColumn('two');
-        $inner->tbody()->addRow(1, ['one' => 'number 1', 'two' => 'number 2']);
-
-
-        $table = new TableMaker(['id' =>'test-table']);
-
-        $table->thead()->addColumn('Col1', null, ['class' => 'size-50'])
-            ->addColumn('Blah', null, ['class' => 'size-25 hide1'])
-            ->addColumn('Here', null, ['class' => 'size-25']);
-
-
-        $table->tbody()->addRow(1, ['col1' => 'Hello', 'blah' => 'How are', 'here' => 'you']);
-        $table->tbody()->addRow(2, ['col1' => 'Black', 'blah' => 'is the', 'here' => 'color']);
-        $table->tbody()->getRow(1)->addSubRow(1, $inner);
-
-
-        return $table;
-    }
-    */
-
     /**
      * Load records.
      * 
@@ -187,7 +115,6 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
     {
         $mt = microtime(true);
         $lm = $this->parent->getApp()->get('logmodel');
-        //$table = $this->createTable();
         $tm = $this->createLogTable();
 
         $logCount = $lm->getSimpleCount();
@@ -198,13 +125,8 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
         $records = $lm->getRecords();
         $processed = $lm->processRecordsForDisplay($records, $logNew, 
             $this->parent->getApp()->getConfig('plugin.slug'));
-        //$table->setData($processed);
 
-        // TESTING ====================================================
         $this->loadRecords($tm, $processed);
-
-
-        // ============================================================
 
         $sm = $this->parent->getApp()->get('settingsmodel');
         $sm->update('log-count', ['value' => strval($logCount)]);
@@ -220,8 +142,6 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
             $msgs = [$_SESSION['sz2-m']];
             unset($_SESSION['sz2-m']);
         }
-
-        //$testTable = $this->doTest();
 
         $elapsed = microtime(true) - $mt;
 
