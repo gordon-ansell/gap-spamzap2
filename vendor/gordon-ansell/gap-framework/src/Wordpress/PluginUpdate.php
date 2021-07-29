@@ -259,6 +259,24 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
      */
     public function postInstall($true, $hook_extra, $result)
     {
+        // Initialise the plugin data.
+        $this->initPluginData();
+
+        // Remember if our plugin was previously activated
+        $wasActivated = \is_plugin_active($this->pluginSlug);
+
+        // Since we are hosted in GitHub, our plugin folder would have a dirname of
+        // reponame-tagname change it to our original one:
+        global $wp_filesystem;
+        $pluginFolder = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . dirname($this->pluginSlug);
+        $wp_filesystem->move($result['destination'], $pluginFolder);
+        $result['destination'] = $pluginFolder;     
+        
+        // Reactivate.
+        if ( $wasActivated ) {
+            $activate = activate_plugin($this->pluginSlug);
+        }
+                
         return $result;
     }
 
