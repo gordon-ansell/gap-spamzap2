@@ -69,7 +69,9 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
         $this->currentVersion = $this->cfg->version; 
         $this->updatePath = $this->cfg->updatepath;
         $this->pluginSlug = $this->cfg->slug . '/' . $this->cfg->slug . '.php';
-        $this->accessToken = $app->getConfig('env.gh');
+
+        $settings = $this->getApp()->get('dbaccess')->getSettings(true);
+        $this->accessToken = $settings['github-token'];
  
         // Define the alternative API for updating checking
         \add_filter('pre_set_site_transient_update_plugins', array(&$this, 'checkUpdate'));

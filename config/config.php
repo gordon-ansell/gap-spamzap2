@@ -22,7 +22,7 @@ return [
     ],
     'db' => [
         'platform'  =>  'sqlite',
-        'path'      =>  dirname(__DIR__) . '/dbstore/spamzap2.db',
+        'path'      =>  dirname(dirname(dirname(__DIR__))) . '/spamzapdb/spamzap2.db',
         'auto'      =>  true,
         //'cache'     =>  dirname(__DIR__) . '/dbstore/cache',    
     ],

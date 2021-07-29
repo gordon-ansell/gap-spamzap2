@@ -46,5 +46,6 @@ class SettingsTable extends Table
         $this->db->insert('settings', ['settings_id' => 'log-lines', 'value' => '250'])->execute();
         $this->db->insert('settings', ['settings_id' => 'log-count', 'value' => '0'])->execute();
         $this->db->insert('settings', ['settings_id' => 'manage-rules-sel', 'value' => '1'])->execute();
+        $this->db->insert('settings', ['settings_id' => 'github-token', 'value' => ''])->execute();
     }
 }

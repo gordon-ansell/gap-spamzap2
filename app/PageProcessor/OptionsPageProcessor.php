@@ -33,6 +33,8 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
     protected function getFormDefaults(): array
     {
         $settings = $this->parent->getApp()->get('dbaccess')->getSettings(true);
+        unset($settings['log-count']);
+        unset($settings['manage-rules-sel']);
         return $settings;
 
         /*
@@ -118,6 +120,13 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
 
         $form->addField('divclose', ['name' => 'row3close']);
 
+        // Row four.
+        $form->addField('divopen', ['name' => 'row4', 'class' => 'one-column']);
+
+            $form->addField('inputtext', ['name' => 'github-token', 'label' => 'GitHub Token', 
+                'title' => "Github token used for updates.", 'style' => 'width: 50em']);
+
+        $form->addField('divclose', ['name' => 'row4close']);
 
         // End stuff.
         $form->addField('buttonsubmit', ['name' => 'submit', 'value' => 'Submit', 'style' => 'width: 10em']);
@@ -154,7 +163,9 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
             }
             if ($form->validate($_POST)) {
                 $settings = $this->parent->getApp()->get('dbaccess')->getSettings();
-                $sm = $this->parent->getApp()->get('settingsmodel');
+                unset($settings['log-count']);
+                unset($settings['manage-rules-sel']);
+                        $sm = $this->parent->getApp()->get('settingsmodel');
                 foreach(array_keys($settings) as $k) {
                     $sm->update($k, ['value' => strval($_POST[$k])]);
                 }
