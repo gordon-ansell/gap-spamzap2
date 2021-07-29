@@ -33,7 +33,6 @@ return [
         'priority'      => 9,
         'usedefip'      => false,
         'updatepath'    => 'https://api.github.com/repos/gordon-ansell/gap-spamzap2/releases',
-        'accesstoken'   => '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',
         'version'       => '1.0.0.dev.1'
     ],
     'template' => [
