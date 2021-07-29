@@ -332,15 +332,21 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
         $table = null;
         if (1 == $ruleset or 5 == $ruleset) {
             $recs = $model->listAll('range_start_long');
-            $f = (5 == $ruleset) ? 'ipallow_id' : 'ipblock_id';
-            $table = $this->createTable1($recs, $f);
+            if (count($recs) > 0) {
+                $f = (5 == $ruleset) ? 'ipallow_id' : 'ipblock_id';
+                $table = $this->createTable1($recs, $f);
+            }
         } else if (4 == $ruleset) {
             $recs = $model->listAll('item');
-            $table = $this->createTable3($recs);
+            if (count($recs) > 0) {
+                $table = $this->createTable3($recs);
+            }
         } else {
             $recs = $model->listAll('item');
-            $f = (3 == $ruleset) ? 'emailblock_id' : 'domainblock_id';
-            $table = $this->createTable2($recs, $f);
+            if (count($recs) > 0) {
+                $f = (3 == $ruleset) ? 'emailblock_id' : 'domainblock_id';
+                $table = $this->createTable2($recs, $f);
+            }
         }
 
         $tplData = [

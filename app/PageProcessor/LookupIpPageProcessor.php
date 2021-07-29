@@ -74,7 +74,6 @@ class LookupIpPageProcessor extends AbstractPageProcessor implements PageProcess
         $passed = null;
         if (isset($_GET['ip'])) {
             $passed = $_GET['ip'];
-            $passed = '191.96.100.84';
         }
 
         $msgs = [];
