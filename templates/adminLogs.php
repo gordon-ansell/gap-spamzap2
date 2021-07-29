@@ -2,22 +2,24 @@
     <h1>SpamZap2 Logs</h1>
 </div>
 
-<div class="topmsg">
-    <?php if (count($msgs) > 0): ?>
-        <div class="topmsg_msg">
-            <?php foreach ($msgs as $m): ?>
-                <p><?= $m ?></p>
-            <?php endforeach ?>
-        </div>
-    <?php endif ?>
-    <?php if (count($errors) > 0): ?>
-        <div class="topmsg_error">
-            <?php foreach ($errors as $e): ?>
-                <p><?= $e ?></p>
-            <?php endforeach ?>
-        </div>
-    <?php endif ?>
-</div>
+<?php if (count($msgs) > 0 or count($errors) > 0): ?> 
+    <div class="topmsg">
+        <?php if (count($msgs) > 0): ?>
+            <div class="topmsg_msg">
+                <?php foreach ($msgs as $m): ?>
+                    <p><?= $m ?></p>
+                <?php endforeach ?>
+            </div>
+        <?php endif ?>
+        <?php if (count($errors) > 0): ?>
+            <div class="topmsg_error">
+                <?php foreach ($errors as $e): ?>
+                    <p><?= $e ?></p>
+                <?php endforeach ?>
+            </div>
+        <?php endif ?>
+    </div>
+<?php endif ?>
 
 <div class="logstats">
     <?php if (1 == $lognew): ?>
