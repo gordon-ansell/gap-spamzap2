@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file is part of the GreenFedora PHP framework, GF package.
+ *
+ * (c) Gordon Ansell <contact@gordonansell.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+declare(strict_types=1);
+
+// Bring in the autoloader.
+require __DIR__ . '/src/greenfedora/vendor/autoload.php';
+
+// Create the application.
+$greenfedora_startup_path = __DIR__;
+$app = require __DIR__ . '/src/greenfedora/app/boot.php';
+
+// Create the kernel.
+$kernel = $app->get('kernel');
+
+// ===================
+// Userland.
+// ===================
+
+// Set the greenfedora startup directory.
+$app->registerValue('greenfedora_startup_path', $greenfedora_startup_path);
+
+// ===================
+
+// Load the commands.
+$kernel->load(null, $app);
+
+// Dispatch I/O to the kernel.
+$returnCode = $kernel->dispatch(new GreenFedora\Console\Input\ArgvInput);
+
+// Return the return code.
+return $returnCode;

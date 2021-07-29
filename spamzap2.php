@@ -4,7 +4,7 @@ Plugin Name: SpamZap2
 Plugin URI: http://gordonansell.com/spamzap2/
 Description: Prevent chosen emails, domains and IP addresses from registering with or commenting on a site.
 Author: Gordon Ansell
-Version: 1.0.0.dev.2
+Version: 1.0.0.dev.3
 Author URI: http://gordonansell.com
 */
 declare(strict_types=1);
@@ -37,12 +37,12 @@ if ( ! session_id() ) {
 
 use App\UserMode;
 use App\AdminMode;
-//use App\Update;
+use App\Update;
 
 // Dispatch to the kernel.
 if (\is_admin()) {
     $app->configureTemplateSystem();
-    $kernel->dispatch(new UserMode($app), new AdminMode($app) /*, new Update($app)*/);
+    $kernel->dispatch(new UserMode($app), new AdminMode($app), new Update($app));
 } else {
     $kernel->dispatch(new UserMode($app), null);
 }

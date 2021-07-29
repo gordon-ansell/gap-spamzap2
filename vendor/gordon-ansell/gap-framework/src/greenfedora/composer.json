@@ -1,0 +1,31 @@
+{
+    "name": "gordon-ansell/greenfedora",
+    "description": "GreenFedora Helper",
+    "keywords": [
+        "framework",
+        "helper",
+        "greenfedora",
+        "php"
+    ],
+    "homepage": "http://gordonansell.com/coding/greenfedora",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": "^7.3",
+        "gordon-ansell/framework": "*"
+    },
+	"minimum-stability": "dev",
+	"repositories": {
+        "framework": {
+            "type": "path",
+            "url": "../../../framework",
+            "options": {
+                "symlink": true 
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Gf\\": "app/"
+        }
+    }
+}

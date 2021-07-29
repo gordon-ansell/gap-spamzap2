@@ -1,0 +1,46 @@
+{
+    "name": "gordon-ansell/gap-spamzap2",
+    "description": "Wordpress Antispam",
+    "keywords": [
+        "wordpress",
+        "antispam",
+        "php"
+    ],
+    "homepage": "http://gordonansell.com/coding/gap-spamzap2",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": "^7.3",
+        "gordon-ansell/gap-framework": "*",
+        "gordon-ansell/gap-phpwhois": "*",
+        "gordon-ansell/gas-fw": "*"
+    },
+	"minimum-stability": "dev",
+	"repositories": {
+        "gap-framework": {
+            "type": "path",
+            "url": "../../../../framework",
+            "options": {
+                "symlink": true 
+            }
+        },
+        "gap-phpwhois": {
+            "type": "path",
+            "url": "../../../../phpwhois",
+            "options": {
+                "symlink": true 
+            }
+        },
+        "gas-fw": {
+            "type": "path",
+            "url": "../../../../../scss",
+            "options": {
+                "symlink": true 
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+}

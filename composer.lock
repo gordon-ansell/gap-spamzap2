@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d63d6534e022d0ec56d2050d74cc5454",
+    "content-hash": "c20d6bde6b6e86203f7997817488fb7d",
     "packages": [
         {
             "name": "gordon-ansell/gap-framework",
             "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gordon-ansell/gap-framework.git",
+                "reference": "c43f05fcf3a652ce9ef679bd3ae20b7417585f40"
+            },
             "dist": {
-                "type": "path",
-                "url": "../../../../framework",
-                "reference": "7c82bce1a6e833b445f68b7f8ab2519ae56d9687"
+                "type": "zip",
+                "url": "https://api.github.com/repos/gordon-ansell/gap-framework/zipball/c43f05fcf3a652ce9ef679bd3ae20b7417585f40",
+                "reference": "c43f05fcf3a652ce9ef679bd3ae20b7417585f40",
+                "shasum": ""
             },
             "require": {
                 "league/plates": "3.*",
@@ -26,6 +32,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^9"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -54,18 +61,25 @@
                 "greenfedora",
                 "php"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "support": {
+                "source": "https://github.com/gordon-ansell/gap-framework/tree/main",
+                "issues": "https://github.com/gordon-ansell/gap-framework/issues"
+            },
+            "time": "2021-07-28T09:17:10+00:00"
         },
         {
             "name": "gordon-ansell/gap-phpwhois",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../../../phpwhois",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gordon-ansell/gap-phpwhois.git",
                 "reference": "4a6c93a2bad1d10262ddb32f60e08b9485a10172"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gordon-ansell/gap-phpwhois/zipball/4a6c93a2bad1d10262ddb32f60e08b9485a10172",
+                "reference": "4a6c93a2bad1d10262ddb32f60e08b9485a10172",
+                "shasum": ""
             },
             "require": {
                 "mso/idna-convert": "*",
@@ -77,6 +91,7 @@
             "suggest": {
                 "lib-openssl": "*"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -114,35 +129,11 @@
                 "Whois",
                 "phpWhois"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
-        },
-        {
-            "name": "gordon-ansell/gas-fw",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "../../../../../scss",
-                "reference": "13757ca17fa7d66f4e14ad8abd88ba1923cf2600"
+            "support": {
+                "source": "https://github.com/gordon-ansell/gap-phpwhois/tree/main",
+                "issues": "https://github.com/gordon-ansell/gap-phpwhois/issues"
             },
-            "type": "library",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "SCSS Framework",
-            "homepage": "http://gordonansell.com/greenfedora/scss",
-            "keywords": [
-                "css",
-                "framework",
-                "greenfedora",
-                "scss"
-            ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2021-07-18T07:29:22+00:00"
         },
         {
             "name": "jakeasmith/http_build_url",
@@ -187,12 +178,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/plates.git",
-                "reference": "0ed15417865a1b51d6e4464f0cbbc986e9840253"
+                "reference": "9a55e710574e38106bde23fa16489a2ef6eabf16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/plates/zipball/0ed15417865a1b51d6e4464f0cbbc986e9840253",
-                "reference": "0ed15417865a1b51d6e4464f0cbbc986e9840253",
+                "url": "https://api.github.com/repos/thephpleague/plates/zipball/9a55e710574e38106bde23fa16489a2ef6eabf16",
+                "reference": "9a55e710574e38106bde23fa16489a2ef6eabf16",
                 "shasum": ""
             },
             "require": {
@@ -244,7 +235,7 @@
                 "issues": "https://github.com/thephpleague/plates/issues",
                 "source": "https://github.com/thephpleague/plates/tree/v3"
             },
-            "time": "2021-01-09T16:31:14+00:00"
+            "time": "2021-07-28T23:59:37+00:00"
         },
         {
             "name": "mso/idna-convert",

@@ -11,33 +11,19 @@
     "require": {
         "php": "^7.3",
         "gordon-ansell/gap-framework": "*",
-        "gordon-ansell/gap-phpwhois": "*",
-        "gordon-ansell/gas-fw": "*"
+        "gordon-ansell/gap-phpwhois": "*"
     },
 	"minimum-stability": "dev",
-	"repositories": {
-        "gap-framework": {
-            "type": "path",
-            "url": "../../../../framework",
-            "options": {
-                "symlink": true 
-            }
-        },
-        "gap-phpwhois": {
-            "type": "path",
-            "url": "../../../../phpwhois",
-            "options": {
-                "symlink": true 
-            }
-        },
-        "gas-fw": {
-            "type": "path",
-            "url": "../../../../../scss",
-            "options": {
-                "symlink": true 
-            }
-        }
-    },
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:gordon-ansell/gap-framework.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:gordon-ansell/gap-phpwhois.git"
+		}
+    ],
     "autoload": {
         "psr-4": {
             "App\\": "app/"
