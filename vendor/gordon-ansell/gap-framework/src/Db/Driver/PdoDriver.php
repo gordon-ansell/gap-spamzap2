@@ -50,6 +50,9 @@ class PdoDriver extends AbstractDriver implements DriverInterface
             $pass = $this->config->pass;
             $dsn = 'mysql:dbname=' . $this->config->name . ';host=' . $this->config->host . ';port=' . $this->config->port;
         } else if ('sqlite' === $platform) {
+            if (!file_exists(dirname($this->config->path))) {
+                mkdir($this->config->path, 0777, true);
+            }
             $dsn = 'sqlite:' . $this->config->path;
         } else {
             throw new DbDriverException(sprintf("'%s' is an unsupported platform.", $platform));
