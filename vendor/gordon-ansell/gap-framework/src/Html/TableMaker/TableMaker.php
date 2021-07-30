@@ -18,6 +18,8 @@ use GreenFedora\Html\TableMaker\THeadInterface;
 use GreenFedora\Html\TableMaker\THead;
 use GreenFedora\Html\TableMaker\TBodyInterface;
 use GreenFedora\Html\TableMaker\TBody;
+use GreenFedora\Html\TableMaker\TFootInterface;
+use GreenFedora\Html\TableMaker\TFoot;
 
 /**
  * Table maker.
@@ -38,6 +40,12 @@ class TableMaker extends Html implements TableMakerInterface
      * @var TBodyInterface
      */
     protected $tbody = null;
+
+    /**
+     * Table foot.
+     * @var TFootInterface
+     */
+    protected $tfoot = null;
 
     /**
      * Format.
@@ -118,7 +126,33 @@ class TableMaker extends Html implements TableMakerInterface
         return $this->tbody;
     }
 
-	/**
+    /**
+     * Create the foot.
+     * 
+     * @param   array       $params     Parameters.
+     * @return  TFootInterface
+     */
+    public function createFoot(array $params = []): TFootInterface
+    {
+        $this->tfoot = new TFoot($this, $params);
+        return $this->tfoot;
+    }
+
+    /**
+     * Get the table foot.
+     * 
+     * @param   array       $params     Parameters for creation.
+     * @return  TFootInterface
+     */
+    public function tfoot(array $params = []): TFootInterface
+    {
+        if (is_null($this->tfoot)) {
+            return $this->createFoot($params);
+        }
+        return $this->tfoot;
+    }
+
+    /**
 	 * Render the table.
 	 *
 	 * @param 	string|null	$data 	        Data.
@@ -131,6 +165,9 @@ class TableMaker extends Html implements TableMakerInterface
             $data = $this->tbody->renderVertical();
         } else {
             $data = $this->thead->render() . $this->tbody->render();
+            if (!is_null($this->tfoot)) {
+                $data .= $this->tfoot->render();
+            }
         }
         return parent::render($data, $extraParams);
     }

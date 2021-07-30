@@ -45,4 +45,20 @@ interface TableMakerInterface extends HtmlInterface
      * @return  TBodyInterface
      */
     public function tbody(array $params = []): TBodyInterface;
+
+    /**
+     * Create the foot.
+     * 
+     * @param   array       $params     Parameters.
+     * @return  TFootInterface
+     */
+    public function createFoot(array $params = []): TFootInterface;
+
+    /**
+     * Get the table foot.
+     * 
+     * @param   array       $params     Parameters for creation.
+     * @return  TFootInterface
+     */
+    public function tfoot(array $params = []): TFootInterface;
 }

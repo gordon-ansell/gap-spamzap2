@@ -103,7 +103,7 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
 
             $form->addField('inputtext', ['name' => 'log-lines', 'label' => 'Log Lines', 
                 'title' => "Enter the number of log lines to display on the main page.", 'style' => 'width: 10em'])
-                ->addValidator(new NumericBetweenValidator(['Log lines'], ['high' => 1000, 'low' => 25]));
+                ->addValidator(new NumericBetweenValidator(['Log lines'], ['high' => 1000, 'low' => 5]));
 
         $form->addField('divclose', ['name' => 'row2close']);
 

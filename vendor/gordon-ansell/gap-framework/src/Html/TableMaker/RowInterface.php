@@ -44,9 +44,16 @@ interface RowInterface extends HtmlInterface
     /**
      * Get the parent body.
      * 
-     * @return TBodyInterface
+     * @return TBodyInterface|TFootInterface
      */
-    public function getBody(): TBodyInterface;
+    public function getBody();
+
+    /**
+     * Get the parent foot.
+     * 
+     * @return TBodyInterface|TFootInterface
+     */
+    public function getFoot();
 
     /**
      * Get the data.
@@ -62,4 +69,11 @@ interface RowInterface extends HtmlInterface
      * @return  mixed
      */
     public function getColumnData($name);
+
+    /**
+     * Get the data for the first column.
+     * 
+     * @return  mixed
+     */
+    public function getFirstColumnData();
 }

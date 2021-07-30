@@ -103,6 +103,20 @@ class LogModel extends AbstractDbModel
     }
 
     /**
+     * Get the record count.
+     * 
+     * @return  int
+     */
+    public function recordCount(): int
+    {
+        $sq = $this->getDb()->select($this->tableName)
+            ->count($this->tableName . '_id', 'cnt');
+
+        $tmp = $sq->fetchArray();
+        return intval($tmp[0]['cnt']);
+    }
+
+    /**
      * Process the records for display.
      * 
      * @param   array           $records        Log records to process.
@@ -360,10 +374,11 @@ class LogModel extends AbstractDbModel
     /**
      * List all entries.
      * 
+     * @param   int      $start      Start record.
      * @param   string   $order      Column to order by.
      * @return  array
      */
-    public function getRecords(?string $order = null): array
+    public function getRecords(int $start = 0, ?string $order = null): array
     {
         if (is_null($order)) {
             $order = $this->tableName . '_id';
@@ -373,7 +388,7 @@ class LogModel extends AbstractDbModel
         $data = $this->getDb()->select($this->tableName)
             ->order('dt', 'desc')
             ->join('iplookup', 'iplookup_id', 'log', 'ip')
-            ->limit(intval($settings['log-lines']))
+            ->limit(intval($settings['log-lines']), $start)
             ->fetchArray();
 
         $result = [];

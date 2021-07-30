@@ -222,7 +222,7 @@ table.tablemaker tr th, table.tablemaker tr td {
   text-align: left;
   padding: 0 0.25em 0 0.25em;
 }
-table.tablemaker tr.header {
+table.tablemaker thead tr:last-of-type {
   border-bottom: 1px solid black;
 }
 table.tablemaker tr.subrow {
@@ -230,6 +230,18 @@ table.tablemaker tr.subrow {
 }
 table.tablemaker tr.subrow td.subrowcell {
   width: 100%;
+}
+table.tablemaker tfoot tr td {
+  font-weight: bold;
+}
+table.tablemaker tfoot tr td.spanall {
+  text-align: center;
+}
+table.tablemaker tfoot tr:first-of-type {
+  border-top: 1px solid black;
+}
+table.tablemaker tfoot tr .pageritem {
+  display: block;
 }
 table.tablemaker.vertical {
   width: 100%;

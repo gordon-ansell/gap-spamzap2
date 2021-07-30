@@ -39,7 +39,7 @@ class Row extends Html implements RowInterface
 
     /**
      * Row data.
-     * @var array|TableMakerInterface
+     * @var array|TableMakerInterface|PagerInterface
      */
     protected $rowData = [];
 
@@ -52,13 +52,13 @@ class Row extends Html implements RowInterface
     /**
      * Constructor.
      *
-     * @param   TBodyInterface                  $tbody      Parent body.
+     * @param   TBodyInterface|TFootInterface   $tbody      Parent body or foot.
      * @param   int                             $rownum     Row number.   
-     * @param   array                           $rowdata    Row data. 
+     * @param   array|PagerInterface            $rowdata    Row data. 
      * @param   array|string                    $params     Parameters.
      * @return  RowInterface    
      */
-    public function __construct(TBodyInterface $tbody, int $rownum, array $rowData = [], $params = [])
+    public function __construct($tbody, int $rownum, $rowData = [], $params = [])
     {
         $this->tbody = $tbody;
         $this->rownum = $rownum;
@@ -108,11 +108,21 @@ class Row extends Html implements RowInterface
     }
 
     /**
-     * Get the parent body.
+     * Get the parent body or foot.
      * 
-     * @return TBodyInterface
+     * @return TBodyInterface|TFootInterface
      */
-    public function getBody(): TBodyInterface
+    public function getBody()
+    {
+        return $this->tbody;
+    }
+
+    /**
+     * Get the parent body or foot.
+     * 
+     * @return TBodyInterface|TFootInterface
+     */
+    public function getFoot()
     {
         return $this->tbody;
     }
@@ -142,7 +152,17 @@ class Row extends Html implements RowInterface
         return $this->rowData[$name];
     }
 
-	/**
+    /**
+     * Get the data for the first column.
+     * 
+     * @return  mixed
+     */
+    public function getFirstColumnData()
+    {
+        return $this->rowData[0];
+    }
+
+    /**
 	 * Render the row.
 	 *
 	 * @param 	string|null	$data 	        Data.
