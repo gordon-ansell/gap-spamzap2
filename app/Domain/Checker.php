@@ -154,7 +154,6 @@ class Checker
         // --------------------------------------------------------------------------
         // First see if we're ignoring checks for logged in users.
         // --------------------------------------------------------------------------
-        /*
         if (TypeCodes::TYPE_REG != $data['type'] and "1" == $settings['ignore-if-logged-in'] and !empty($data['userid'])) {
             $logData = $data;
             $logData['matchtype']   = TypeCodes::MT_LOGGED_IN;
@@ -163,7 +162,6 @@ class Checker
             $lm->create($logData);
             return [true, null];
         }
-        */
 
         // --------------------------------------------------------------------------
         // Next do an IP allow check.
@@ -209,15 +207,6 @@ class Checker
         if (!is_null($comment)) {
             $commentDomains = Domain::domainsFromString($comment);
         }
-        /*
-        if (!is_null($comment)) {
-            $result = preg_match_all("~https?:\/\/([a-zA-Z0-9\.]+)~i", $comment, $matches);
-            if (false === $result) {
-                \wp_die("Regex error: " . error_get_last()['message']);
-            }
-            $commentDomains = $matches[1];
-        }
-        */
 
         // Load the domains.
         $domainsToCheck = $domainblockmodel->listAll();
@@ -303,6 +292,26 @@ class Checker
                             $lm->create($logData);
                             return [false, null];
                         }
+                    }
+                }
+
+                // Do an extra check on contacts.
+                if (TypeCodes::TYPE_CONTACT == $data['type']) {
+                    if (false !== strpos($comment, $record['item'])) {
+                        $logData = $data;
+                        $logData['matchtype']   = TypeCodes::MT_DOM_COMMENT;
+                        $logData['matchval'] = $record['item'];
+                        $logData['dt'] = $this->getDt();
+                        $logData['status'] = TypeCodes::STATUS_BLOCK;
+                        $cmtd = implode(',',$commentDomains);
+                        if ('' != $cmtd) {
+                            $cmtd .= ',' . $record['item'];
+                        } else {
+                            $cmtd = $record['item'];
+                        }
+                        $logData['commentdomains'] = $cmtd;
+                        $lm->create($logData);
+                        return [false, null];
                     }
                 }
             }
