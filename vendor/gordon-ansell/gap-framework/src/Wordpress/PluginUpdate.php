@@ -210,7 +210,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
         $response->homepage = $this->pluginData["PluginURI"];
         $response->sections = [
             'description' => $this->pluginData['Description'],
-            //'changelog' => $this->githubApiResult['body'],
+            'changelog' => $this->githubApiResult->body,
 
         ];
 
