@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '81ec093d19457e563c03ad3eb832a26e6cfae942',
+        'reference' => '65c52660759659c02b94e33eaf4eb172edb4f214',
         'name' => 'gordon-ansell/gap-spamzap2',
         'dev' => true,
     ),
@@ -38,7 +38,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '81ec093d19457e563c03ad3eb832a26e6cfae942',
+            'reference' => '65c52660759659c02b94e33eaf4eb172edb4f214',
             'dev_requirement' => false,
         ),
         'jakeasmith/http_build_url' => array(
