@@ -4,7 +4,7 @@ Plugin Name: SpamZap2
 Plugin URI: http://gordonansell.com/spamzap2/
 Description: Prevent chosen emails, domains and IP addresses from registering with or commenting on a site.
 Author: Gordon Ansell
-Version: 1.0.0.dev.10
+Version: 1.0.0.dev.11
 Author URI: http://gordonansell.com
 */
 declare(strict_types=1);

@@ -111,7 +111,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
         // We need the access token for private repos.
         $args = [];
         if (!empty($this->accessToken)) {
-            $args['headers'] = ['Authorization' => $this->accessToken];
+            $args['headers'] = ['Authorization' => 'token ' . $this->accessToken];
             //$url = add_query_arg(array("access_token" => $this->accessToken), $url);
         }
 
@@ -163,7 +163,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
             // Include the access token for private GitHub repos.
             $args = [];
             if (!empty( $this->accessToken)) {
-                //$args['headers'] = ['Authorization' => $this->accessToken];
+                //$args['headers'] = ['Authorization' => 'token' . $this->accessToken];
                 $package = \add_query_arg(array("access_token" => $this->accessToken), $package);
             }
         
