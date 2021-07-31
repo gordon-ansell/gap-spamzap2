@@ -7,12 +7,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gordon-ansell/gap-framework.git",
-                "reference": "bd431093389f457726e6af5a76d780d6a5f52b37"
+                "reference": "66790023ce7f75cd0c28bca08642eddde287e581"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gordon-ansell/gap-framework/zipball/bd431093389f457726e6af5a76d780d6a5f52b37",
-                "reference": "bd431093389f457726e6af5a76d780d6a5f52b37",
+                "url": "https://api.github.com/repos/gordon-ansell/gap-framework/zipball/66790023ce7f75cd0c28bca08642eddde287e581",
+                "reference": "66790023ce7f75cd0c28bca08642eddde287e581",
                 "shasum": ""
             },
             "require": {
@@ -27,7 +27,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^9"
             },
-            "time": "2021-07-30T09:17:00+00:00",
+            "time": "2021-07-31T05:34:01+00:00",
             "default-branch": true,
             "type": "library",
             "installation-source": "dist",
