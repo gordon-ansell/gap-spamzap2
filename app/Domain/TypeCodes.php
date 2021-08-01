@@ -65,6 +65,7 @@ class TypeCodes
     const MT_EMAIL_BLOCK        =   10;
     const MT_STRING_BLOCK_COM   =   11;
     const MT_STRING_BLOCK_USER  =   12;
+    const MT_BLOCK_ALL          =   13;
 
     // MATCH type strings.
     const TYPESTRS_MT = [
@@ -80,5 +81,6 @@ class TypeCodes
         self::MT_EMAIL_BLOCK        => "Email Blocked",    
         self::MT_STRING_BLOCK_COM   => "String Comment",
         self::MT_STRING_BLOCK_USER  => "String Username",
+        self::MT_BLOCK_ALL          => "Block All",
     ];
 }

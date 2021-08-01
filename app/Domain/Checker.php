@@ -139,6 +139,19 @@ class Checker
         $lookupModel->addLookup($data['ip']);
 
         // --------------------------------------------------------------------------
+        // Is block all set?
+        // --------------------------------------------------------------------------
+        if ('1' == $settings['block-all'] and !\current_user_can('manage_options')) {
+            $logData = $data;
+            $logData['matchtype']   = TypeCodes::MT_BLOCK_ALL;
+            $logData['matchval'] = '';
+            $logData['dt'] = $this->getDt();
+            $logData['status'] = TypeCodes::STATUS_BLOCK;
+            $lm->create($logData);
+            return [false, null];
+        }
+
+        // --------------------------------------------------------------------------
         // If this is a registration, check for errors first.
         // --------------------------------------------------------------------------
         if (TypeCodes::TYPE_REG == $data['type'] and $errors->has_errors()) {

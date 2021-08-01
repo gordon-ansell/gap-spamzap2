@@ -172,7 +172,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
             $obj->new_version = $this->githubAPIResult->tag_name;
             $obj->url = $this->pluginData["PluginURI"];
             $obj->package = $package;
-            $obj->args = $args;
+            //$obj->args = $args;
             $transient->response[$this->pluginSlug] = $obj;
         }
 

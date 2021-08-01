@@ -35,6 +35,8 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
         $settings = $this->parent->getApp()->get('dbaccess')->getSettings(true);
         unset($settings['log-count']);
         unset($settings['manage-rules-sel']);
+        unset($settings['github-token']);
+        unset($settings['debug-mode']);
         return $settings;
 
         /*
@@ -110,23 +112,15 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
         // Row three.
         $form->addField('divopen', ['name' => 'row3', 'class' => 'three-columns']);
 
-            $form->addField('radioset', ['name' => 'debug-mode', 'label' => 'Debug Mode?', 'class' => 'radio', 
+            $form->addField('radioset', ['name' => 'block-all', 'label' => 'Block All?', 'class' => 'radio', 
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
-                'title' => "Run in debug mode?"]);
+                'title' => "Block all except logged in administrators. Useful in a bad attack."]);
 
             $form->addField('radioset', ['name' => 'dummy-mode', 'label' => 'Dummy Mode?', 'class' => 'radio', 
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
-                'title' => "Run in dummy mode? This just will perform no actial blocks."]);
+                'title' => "Run in dummy mode? This just will perform no actual blocks."]);
 
         $form->addField('divclose', ['name' => 'row3close']);
-
-        // Row four.
-        $form->addField('divopen', ['name' => 'row4', 'class' => 'one-column']);
-
-            $form->addField('inputtext', ['name' => 'github-token', 'label' => 'GitHub Token', 
-                'title' => "Github token used for updates.", 'style' => 'width: 50em']);
-
-        $form->addField('divclose', ['name' => 'row4close']);
 
         // End stuff.
         $form->addField('buttonsubmit', ['name' => 'submit', 'value' => 'Submit', 'style' => 'width: 10em']);
@@ -165,7 +159,9 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 $settings = $this->parent->getApp()->get('dbaccess')->getSettings();
                 unset($settings['log-count']);
                 unset($settings['manage-rules-sel']);
-                        $sm = $this->parent->getApp()->get('settingsmodel');
+                unset($settings['github-token']);
+                unset($settings['debug-mode']);
+                $sm = $this->parent->getApp()->get('settingsmodel');
                 foreach(array_keys($settings) as $k) {
                     $sm->update($k, ['value' => strval($_POST[$k])]);
                 }
