@@ -68,7 +68,6 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
 
         $this->currentVersion = $this->cfg->version; 
         $this->updatePath = $this->cfg->updatepath;
-        $this->pluginSlug = $this->cfg->slug . '/' . $this->cfg->slug . '.php';
 
         $settings = $this->getApp()->get('dbaccess')->getSettings(true);
         $this->accessToken = $settings['github-token'];
@@ -90,6 +89,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
      */
     protected function initPluginData()
     {
+        $this->pluginSlug = \plugin_basename($this->app->get('pluginFile'));
         $this->pluginData = \get_plugin_data($this->app->get('pluginFile'));
     }
 
@@ -199,6 +199,9 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
 
         // Load the release info.
         $this->loadRepoReleaseInfo();
+
+        // Split the slug.
+        $sp = explode('/', $this->pluginSlug);
 
         // Add our plugin information.
         $response->last_updated = $this->githubAPIResult->published_at;
