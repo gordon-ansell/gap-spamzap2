@@ -285,7 +285,7 @@ class LogModel extends AbstractDbModel
             }
 
             // IP address seen?
-            if (0 != $record['seenip'] and 0 != $record['seen24']) {
+            if (0 != $record['seenip'] or 0 != $record['seen24']) {
                 if (0 != $record['seenip']) {
                     $record['ip'] = '<span class="ipseen">' . $record['ip'] . '</span>';
                 } else {
