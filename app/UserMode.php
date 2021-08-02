@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace App;
 
 use App\Domain\TypeCodes;
-use GreenFedora\IP\IPAddress;
 use GreenFedora\Wordpress\PluginUser;
 use GreenFedora\Wordpress\PluginUserInterface;
 use App\Domain\Checker;
@@ -59,6 +58,18 @@ class UserMode extends PluginUser implements PluginUserInterface
         // Add a check for contact form 7.
         if ('1' == $this->settings['check-contacts']) {
             \add_filter("wpcf7_before_send_mail", array($this, "preprocessContactForm7Filter"),
+            $this->app->getConfig('plugin.priority'), 3);
+        }  
+
+        // Add a check for retrieve password.
+        if ('1' == $this->settings['check-passwordrecovery']) {
+            \add_filter("lostpassword_user_data", array($this, "preprocessRetrievePasswordFilter"),
+            $this->app->getConfig('plugin.priority'), 2);
+        }  
+
+        // Add a check for logins.
+        if ('1' == $this->settings['check-login']) {
+            \add_filter("authenticate", array($this, "preprocessLoginFilter"),
             $this->app->getConfig('plugin.priority'), 3);
         }  
 
@@ -170,5 +181,84 @@ class UserMode extends PluginUser implements PluginUserInterface
             $abort = true;
         }
 
+    }
+
+    /**
+     * Called when a retrieve password attempt is submitted.
+     * 
+     * @param   \WP_User    $user_data     User data.   
+     * @param   \WP_Error   $errors        Errors.
+     * 
+     * @return  \WP_User                   User data.
+     */
+    public function preprocessRetrievePasswordFilter(\WP_User $user_data, \WP_Error $errors)
+    {
+        $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOSTPASSWORD);
+
+        $checkBlock['username'] = $user_data->user_login;
+        $checkBlock['userid'] = $user_data->ID;
+        $checkBlock['email'] = $user_data->user_email;
+        $checkBlock['commentauthorurl'] = $user_data->user_url;
+
+        list($status, $info) = $this->checker->doCheck($checkBlock, $errors);
+
+        if ("1" == $this->settings['dummy-mode']) {
+            return;
+        }
+
+        if (false === $status) {
+            $errors->add('email_error', $this->__('<strong>ERROR</strong>: Suspected hacker - go away.'));
+        }
+
+        return $user_data;
+    }
+
+    /**
+     * Called when a login attempt is submitted.
+     * 
+     * @param   null|\WP_User|\WP_Error     $user       User data or errors.   
+     * @param   string                      $username   Username.
+     * @param   string                      $password   Password.
+     * 
+     * @return  \WP_User                   User data.
+     */
+    public function preprocessLoginFilter($user, string $username, string $password)
+    {
+        if (is_null($user) and empty($username)) {
+            return $user;
+        }
+        
+        $tmpUser = false;
+        if (is_null($user) and !empty($username)) {
+            $tmpUser = \get_user_by('login', $username);
+        }
+
+        $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+        $checkBlock['username'] = $username;
+
+        $errors = null;
+        if (\is_wp_error($user)) {
+            $errors = $user;
+        } else if ($tmpUser instanceof \WP_User) {
+            $checkBlock['userid'] = $tmpUser->ID;
+            $checkBlock['email'] = $tmpUser->user_email;
+            $checkBlock['commentauthorurl'] = $tmpUser->user_url;
+        }
+
+        list($status, $info) = $this->checker->doCheck($checkBlock, $errors);
+
+        if (\is_wp_error($user)) {
+            return $user;
+        }
+
+        if ("1" == $this->settings['dummy-mode']) {
+            return;
+        }
+
+        if (false === $status) {
+            \wp_die('Suspected hacker - go away');
+        }
+
+        return $user;
     }
 }

@@ -309,6 +309,9 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
 
         $settings = $this->parent->getApp()->get('dbaccess')->getSettings(true);
         $ruleset = intval($settings['manage-rules-sel']);
+        if (empty($ruleset)) {
+            $ruleset = 1;
+        }
 
         $model = null;
         switch ($ruleset) {

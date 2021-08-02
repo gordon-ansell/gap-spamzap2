@@ -21,6 +21,8 @@ class TypeCodes
     const TYPE_REG = 2;
     const TYPE_CONTACT = 3;
     const TYPE_INFO = 4;
+    const TYPE_LOSTPASSWORD = 5;
+    const TYPE_LOGIN = 6;
 
     // TYPE strings.
     const TYPESTRS_TYPE = [
@@ -28,6 +30,8 @@ class TypeCodes
         self::TYPE_REG => 'Register',
         self::TYPE_CONTACT => 'Contact',
         self::TYPE_INFO => 'Info',
+        self::TYPE_LOSTPASSWORD => 'Lost Password',
+        self::TYPE_LOGIN => 'Login',
     ];
 
     // TYPE strings short.
@@ -36,6 +40,8 @@ class TypeCodes
         self::TYPE_REG => 'Reg',
         self::TYPE_CONTACT => 'Con',
         self::TYPE_INFO => 'Inf',
+        self::TYPE_LOSTPASSWORD => 'Pass',
+        self::TYPE_LOGIN => 'Lgn',
     ];
 
     // Statuses.
@@ -66,6 +72,8 @@ class TypeCodes
     const MT_STRING_BLOCK_COM   =   11;
     const MT_STRING_BLOCK_USER  =   12;
     const MT_BLOCK_ALL          =   13;
+    const MT_LP_ERROR           =   14;
+    const MT_LOGIN_ERROR        =   15;
 
     // MATCH type strings.
     const TYPESTRS_MT = [
@@ -82,5 +90,7 @@ class TypeCodes
         self::MT_STRING_BLOCK_COM   => "String Comment",
         self::MT_STRING_BLOCK_USER  => "String Username",
         self::MT_BLOCK_ALL          => "Block All",
+        self::MT_LP_ERROR           => "Lost Pass Error",
+        self::MT_LOGIN_ERROR        => "Login Error",
     ];
 }

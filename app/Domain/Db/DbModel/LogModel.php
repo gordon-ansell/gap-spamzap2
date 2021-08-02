@@ -181,6 +181,20 @@ class LogModel extends AbstractDbModel
             'src' => Path::join($iconUrl, 'registration.png'),
         ]);
         $regIconR = $regIcon->render();
+        $passIcon = new Html('img', [
+            'title' => 'Password recovery record', 
+            'alt' => "Password recovery icon.", 
+            'class' => 'icon password',
+            'src' => Path::join($iconUrl, 'password.png'),
+        ]);
+        $passIconR = $passIcon->render();
+        $lgnIcon = new Html('img', [
+            'title' => 'Login record', 
+            'alt' => "Login icon.", 
+            'class' => 'icon login',
+            'src' => Path::join($iconUrl, 'login.png'),
+        ]);
+        $lgnIconR = $lgnIcon->render();
 
         // Delete user.
         $delUserIcon = new Html('img', [
@@ -282,6 +296,10 @@ class LogModel extends AbstractDbModel
                 $record['type'] = $contactIconR;
             } else if ('Reg' == $record['type']){
                 $record['type'] = $regIconR;
+            } else if ('Pass' == $record['type']){
+                $record['type'] = $passIconR;
+            } else if ('Lgn' == $record['type']){
+                $record['type'] = $lgnIconR;
             }
 
             // IP address seen?

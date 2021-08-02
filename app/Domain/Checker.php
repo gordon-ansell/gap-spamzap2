@@ -69,11 +69,22 @@ class Checker
      */
     protected function getDf(string $field, array $data): ?string
     {
-        if ('commentauthorurl' == $field and TypeCodes::TYPE_COMMENT != $data['type']) {
+        if (
+            'commentauthorurl' == $field and TypeCodes::TYPE_COMMENT != $data['type'] 
+            and TypeCodes::TYPE_LOSTPASSWORD != $data['type']
+            and TypeCodes::TYPE_LOGIN != $data['type']
+        ) {
             return null;
         }
 
-        if ('comment' == $field and TypeCodes::TYPE_REG == $data['type']) {
+        if (
+            'comment' == $field and 
+                (
+                    TypeCodes::TYPE_REG == $data['type']
+                    or TypeCodes::TYPE_LOSTPASSWORD == $data['type']
+                    or TypeCodes::TYPE_LOGIN == $data['type']
+                )
+        ) {
             return null;
         }
 
@@ -152,11 +163,20 @@ class Checker
         }
 
         // --------------------------------------------------------------------------
-        // If this is a registration, check for errors first.
+        // If this is a registration, login or lost password, check for errors first.
         // --------------------------------------------------------------------------
-        if (TypeCodes::TYPE_REG == $data['type'] and $errors->has_errors()) {
+        if ((TypeCodes::TYPE_REG == $data['type'] or TypeCodes::TYPE_LOSTPASSWORD == $data['type'] or TypeCodes::TYPE_LOGIN == $data['type']) 
+            and ($errors instanceof \WP_Error) and $errors->has_errors()) {
+
+            $code = TypeCodes::MT_REG_ERROR;
+            if (TypeCodes::TYPE_LOSTPASSWORD == $data['type']) {
+                $code = TypeCodes::MT_LP_ERROR;
+            } else if (TypeCodes::TYPE_LOGIN == $data['type']) {
+                $code = TypeCodes::MT_LOGIN_ERROR;
+            }
+
             $logData = $data;
-            $logData['matchtype']   = TypeCodes::MT_REG_ERROR;
+            $logData['matchtype'] = $code;
             $logData['matchval'] = $errors->get_error_message();
             $logData['dt'] = $this->getDt();
             $logData['status'] = TypeCodes::STATUS_ERROR;

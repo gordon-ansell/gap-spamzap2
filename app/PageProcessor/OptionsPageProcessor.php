@@ -95,6 +95,19 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
         // Row two.
         $form->addField('divopen', ['name' => 'row2', 'class' => 'three-columns']);
 
+            $form->addField('radioset', ['name' => 'check-passwordrecovery', 'label' => 'Check Password Recovery?', 'class' => 'radio', 
+                'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
+                'title' => "Do you want to process password recovery attempts through SpamZap2?"]);
+
+            $form->addField('radioset', ['name' => 'check-login', 'label' => 'Check Logins?', 'class' => 'radio', 
+                'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
+                'title' => "Do you want to process login attempts through SpamZap2?"]);
+
+        $form->addField('divclose', ['name' => 'row2close']);
+
+        // Row three.
+        $form->addField('divopen', ['name' => 'row3', 'class' => 'three-columns']);
+
             $form->addField('radioset', ['name' => 'ignore-if-logged-in', 'label' => 'Ignore Logged In Users?', 'class' => 'radio', 
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "SpamXap2 will not check logged in users is this is set to yes."]);
@@ -107,10 +120,10 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'title' => "Enter the number of log lines to display on the main page.", 'style' => 'width: 10em'])
                 ->addValidator(new NumericBetweenValidator(['Log lines'], ['high' => 1000, 'low' => 5]));
 
-        $form->addField('divclose', ['name' => 'row2close']);
+        $form->addField('divclose', ['name' => 'row3close']);
 
-        // Row three.
-        $form->addField('divopen', ['name' => 'row3', 'class' => 'three-columns']);
+        // Row four.
+        $form->addField('divopen', ['name' => 'row4', 'class' => 'three-columns']);
 
             $form->addField('radioset', ['name' => 'block-all', 'label' => 'Block All?', 'class' => 'radio', 
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
@@ -120,7 +133,7 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "Run in dummy mode? This just will perform no actual blocks."]);
 
-        $form->addField('divclose', ['name' => 'row3close']);
+        $form->addField('divclose', ['name' => 'row4close']);
 
         // End stuff.
         $form->addField('buttonsubmit', ['name' => 'submit', 'value' => 'Submit', 'style' => 'width: 10em']);

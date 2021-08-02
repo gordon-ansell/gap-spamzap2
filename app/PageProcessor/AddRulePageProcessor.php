@@ -39,6 +39,8 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
             'ip-block' => '',
             'email-block' => '',
             'isemailregex' => 'no',
+//            'user-block' => '',
+//            'isuserregex' => 'no',
             'string-block' => '',
             'isstringregex' => 'no',
             'applyto_user' => "on",
@@ -103,7 +105,22 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
             $form->addField('divclose', ['name' => 'row3close']);
 
             // Row four.
+            /*
             $form->addField('divopen', ['name' => 'row4', 'class' => 'three-columns']);
+
+                $form->addField('inputtext', ['name' => 'user-block', 'label' => 'Username', 
+                    'title' => "Enter a user name to block.", 'style' => 'width: 20em']);
+
+
+                $form->addField('radioset', ['name' => 'isuserregex', 'label' => 'Is User Block Regex?', 'class' => 'radio', 
+                    'options' => ['yes' => 'Yes', 'no' => 'No'], 'style' => 'width: 10em',
+                    'title' => "Do you want to use this user block as a regular expression?"]);
+
+            $form->addField('divclose', ['name' => 'row4close']);
+            */
+
+            // Row five.
+            $form->addField('divopen', ['name' => 'row5', 'class' => 'three-columns']);
 
                 $form->addField('inputtext', ['name' => 'string-block', 'label' => 'String', 
                     'placeholder' => '', 'title' => "Enter a string or regex to block.", 'style' => 'width: 20em']);
@@ -120,7 +137,7 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
 
                 $form->addField('spanclose', ['name' => 'cbsetclose']);
 
-            $form->addField('divclose', ['name' => 'row4close']);
+            $form->addField('divclose', ['name' => 'row5close']);
 
         $form->addField('divclose', ['name' => 'blocksclose']);
 
@@ -210,6 +227,7 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
 
                 $stringBlock = $_POST['string-block'];
                 $isstringregex = $_POST['isstringregex'];
+
                 $applytouser = $_POST['applyto_user'];
                 $applytocomment = $_POST['applyto_comment'];
 
