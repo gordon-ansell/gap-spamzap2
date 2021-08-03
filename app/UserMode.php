@@ -75,7 +75,7 @@ class UserMode extends PluginUser implements PluginUserInterface
 
         // Add a check for auths.
         if ('1' == $this->settings['check-auths']) {
-            \add_filter("authenticate", array($this, "preprocessLoginFilter"),
+            \add_filter("authenticate", array($this, "preprocessAuthFilter"),
                 $this->app->getConfig('plugin.priority'), 3);
         }  
 
@@ -251,7 +251,7 @@ class UserMode extends PluginUser implements PluginUserInterface
      * 
      * @return  \WP_User                   User data.
      */
-    public function preprocessLoginFilter($user, string $username, string $password)
+    public function preprocessAuthFilter($user, string $username, string $password)
     {         
         if (!isset($_GET['loggedout'])) {
             $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
@@ -260,12 +260,30 @@ class UserMode extends PluginUser implements PluginUserInterface
             if (false === $status) {
                 \wp_die('Suspected trouble maker - go away');
             } else {
+                $msg = '';
+                if (\is_wp_error($user)) {
+                    $msg = $user->get_error_message(); 
+                } else {
+                    $userinfo = \get_user_by('login', $username);
+                    $userid = 0;
+                    $msg = "User does not exists";
+                    if (false !== $userinfo) {
+                        $msg = "User exists";
+                        $userid = $userinfo->ID;
+                    }
+                }
                 $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
                 $data['username'] = $username;
+                $data['userid'] = $userid;
                 $data['matchtype'] = TypeCodes::MT_LOGIN_AUTH;
-                $data['matchval'] = $username;
+                $data['matchval'] = $msg;
                 $data['dt'] = $this->getDt();
-                $data['status'] = TypeCodes::STATUS_ALLOW;
+
+                if (\is_wp_error($user)) {
+                    $data['status'] = TypeCodes::STATUS_ERROR;
+                } else {
+                    $data['status'] = TypeCodes::STATUS_ALLOW;
+                }
 
                 $secret_key = $this->settings['secret-key'];
                 $secret_iv = $this->settings['secret-iv'];
