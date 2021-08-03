@@ -261,6 +261,7 @@ class UserMode extends PluginUser implements PluginUserInterface
                 \wp_die('Suspected trouble maker - go away');
             } else {
                 $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+                $data['username'] = $username;
                 $data['matchtype'] = TypeCodes::MT_LOGIN_AUTH;
                 $data['matchval'] = $username;
                 $data['dt'] = $this->getDt();
