@@ -13,11 +13,9 @@ namespace App\PageProcessor;
 
 use GreenFedora\Wordpress\PageProcessor\AbstractPageProcessor;
 use GreenFedora\Wordpress\PageProcessor\PageProcessorInterface;
-use GreenFedora\Validator\IPAddressPossibleCIDRValidator;
 use GreenFedora\Form\Form;
 use GreenFedora\Form\FormInterface;
 use GreenFedora\Stdlib\Arr\Arr;
-use App\Domain\TypeCodes;
 use GreenFedora\Validator\NumericBetweenValidator;
 
 /**
@@ -103,6 +101,10 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "Do you want to process login attempts through SpamZap2?"]);
 
+            $form->addField('radioset', ['name' => 'check-auths', 'label' => 'Check Authentications?', 'class' => 'radio', 
+                'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
+                'title' => "Do you want to process authentication attempts through SpamZap2?"]);
+
         $form->addField('divclose', ['name' => 'row2close']);
 
         // Row three.
@@ -134,6 +136,21 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'title' => "Run in dummy mode? This just will perform no actual blocks."]);
 
         $form->addField('divclose', ['name' => 'row4close']);
+
+        // Row five.
+        $form->addField('divopen', ['name' => 'row5', 'class' => 'three-columns']);
+
+            $form->addField('radioset', ['name' => 'decrypt', 'label' => 'Decrypt Passwords', 'class' => 'radio', 
+                'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
+                'title' => "Decrypt passwords for authentication attempts? SECURITY WARNING - THIS IS DANGEROUS."]);
+
+            $form->addField('inputtext', ['name' => 'secret-key', 'label' => 'Secret Key', 
+                'title' => "Secret key for encryption.", 'style' => 'width: 10em']);
+
+            $form->addField('inputtext', ['name' => 'secret-iv', 'label' => 'Secret Vector', 
+                'title' => "Secret vector for encryption.", 'style' => 'width: 10em']);
+
+        $form->addField('divclose', ['name' => 'row5close']);
 
         // End stuff.
         $form->addField('buttonsubmit', ['name' => 'submit', 'value' => 'Submit', 'style' => 'width: 10em']);

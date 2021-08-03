@@ -187,7 +187,8 @@ class Checker
         // --------------------------------------------------------------------------
         // First see if we're ignoring checks for logged in users.
         // --------------------------------------------------------------------------
-        if (TypeCodes::TYPE_REG != $data['type'] and "1" == $settings['ignore-if-logged-in'] and !empty($data['userid'])) {
+        if (TypeCodes::TYPE_REG != $data['type'] and TypeCodes::TYPE_LOGIN != $data['type'] 
+            and "1" == $settings['ignore-if-logged-in'] and !empty($data['userid'])) {
             $logData = $data;
             $logData['matchtype']   = TypeCodes::MT_LOGGED_IN;
             $logData['dt'] = $this->getDt();
@@ -231,8 +232,11 @@ class Checker
         $authorurl = $this->getDf('commentauthorurl', $data);
         $emailaddress = $this->getDf('email', $data);
         $username = $this->getDf('username', $data);
-        $sp = explode('@', $emailaddress);
-        $emaildomain = $sp[1];
+        $emaildomain = null;
+        if (!is_null($emailaddress)) {
+            $sp = explode('@', $emailaddress);
+            $emaildomain = $sp[1];
+        }
 
         // Domains in comments.
         $comment = $this->getDf('comment', $data);

@@ -41,7 +41,8 @@ class LogTable extends Table
             ->addColumnText('commentposttitle')
             ->addColumnInt('commentpostid')
             ->addColumnText('commentdomains')
-            ->addColumnTinyInt('isdummy', 0);
+            ->addColumnTinyInt('isdummy', 0)
+            ->addColumnText('info');
     }
 
     /**

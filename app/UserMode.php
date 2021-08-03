@@ -58,19 +58,25 @@ class UserMode extends PluginUser implements PluginUserInterface
         // Add a check for contact form 7.
         if ('1' == $this->settings['check-contacts']) {
             \add_filter("wpcf7_before_send_mail", array($this, "preprocessContactForm7Filter"),
-            $this->app->getConfig('plugin.priority'), 3);
+                $this->app->getConfig('plugin.priority'), 3);
         }  
 
         // Add a check for retrieve password.
         if ('1' == $this->settings['check-passwordrecovery']) {
             \add_filter("lostpassword_user_data", array($this, "preprocessRetrievePasswordFilter"),
-            $this->app->getConfig('plugin.priority'), 2);
+                $this->app->getConfig('plugin.priority'), 2);
         }  
 
-        // Add a check for logins.
+        // Add a check for failed logins.
         if ('1' == $this->settings['check-login']) {
+            \add_action("wp_login_failed", array($this, "preprocessLoginFailedAction"),
+                $this->app->getConfig('plugin.priority'), 2);
+        }  
+
+        // Add a check for auths.
+        if ('1' == $this->settings['check-auths']) {
             \add_filter("authenticate", array($this, "preprocessLoginFilter"),
-            $this->app->getConfig('plugin.priority'), 3);
+                $this->app->getConfig('plugin.priority'), 3);
         }  
 
         $this->checker = new Checker($this->getApp());
@@ -214,6 +220,29 @@ class UserMode extends PluginUser implements PluginUserInterface
     }
 
     /**
+     * Called when a login attempt fails.
+     * 
+     * @param   string                      $username   Username.
+     * @param   \WP_Error                   $error      Error message.
+     * 
+     * @return  
+     */
+    public function preprocessLoginFailedAction(string $username, \WP_Error $error)
+    {
+        $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+        $data['matchtype'] = TypeCodes::MT_LOGIN_ERROR;
+        $data['matchval'] = strip_tags($error->get_error_message(), '<strong>');
+        $data['dt'] = $this->getDt();
+        $data['status'] = TypeCodes::STATUS_ERROR;
+        $data['username'] = $username;
+        $lm = $this->getApp()->get('logmodel');
+        $lm->create($data);
+
+        \status_header(401);
+        \nocache_headers();
+    }
+
+    /**
      * Called when a login attempt is submitted.
      * 
      * @param   null|\WP_User|\WP_Error     $user       User data or errors.   
@@ -223,42 +252,32 @@ class UserMode extends PluginUser implements PluginUserInterface
      * @return  \WP_User                   User data.
      */
     public function preprocessLoginFilter($user, string $username, string $password)
-    {
-        if (is_null($user) and empty($username)) {
-            return $user;
-        }
-        
-        $tmpUser = false;
-        if (is_null($user) and !empty($username)) {
-            $tmpUser = \get_user_by('login', $username);
-        }
+    {         
+        if (!isset($_GET['loggedout'])) {
+            $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+            $checkBlock['username'] = $username;
+            list($status, $info) = $this->checker->doCheck($checkBlock);
+            if (false === $status) {
+                \wp_die('Suspected trouble maker - go away');
+            } else {
+                $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+                $data['matchtype'] = TypeCodes::MT_LOGIN_AUTH;
+                $data['matchval'] = $username;
+                $data['dt'] = $this->getDt();
+                $data['status'] = TypeCodes::STATUS_ALLOW;
 
-        $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
-        $checkBlock['username'] = $username;
+                $secret_key = $this->settings['secret-key'];
+                $secret_iv = $this->settings['secret-iv'];
+                if (!empty($secret_key) and !empty($secret_iv)) {
+                    $lm = $this->getApp()->get('logmodel');
+                    $data['info'] = $lm->cryptic($password, $secret_key, $secret_iv);
+                }
+                $lm->create($data);    
+            }
 
-        $errors = null;
-        if (\is_wp_error($user)) {
-            $errors = $user;
-        } else if ($tmpUser instanceof \WP_User) {
-            $checkBlock['userid'] = $tmpUser->ID;
-            $checkBlock['email'] = $tmpUser->user_email;
-            $checkBlock['commentauthorurl'] = $tmpUser->user_url;
-        }
-
-        list($status, $info) = $this->checker->doCheck($checkBlock, $errors);
-
-        if (\is_wp_error($user)) {
-            return $user;
-        }
-
-        if ("1" == $this->settings['dummy-mode']) {
-            return;
-        }
-
-        if (false === $status) {
-            \wp_die('Suspected hacker - go away');
         }
 
         return $user;
+
     }
 }

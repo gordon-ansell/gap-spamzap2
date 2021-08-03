@@ -78,6 +78,22 @@ interface FieldInterface
     public function filter($source);
 
     /**
+     * Add an input filter.
+     * 
+     * @param   FilterInterface     $filter     New filter.
+     * @return  FieldInterface 
+     */
+    public function addInputFilter(FilterInterface $filter): FieldInterface;
+
+    /**
+     * Filter the field for input.
+     * 
+     * @param   mixed   $source     Source to filter.
+     * @return  mixed
+     */
+    public function inputFilter($source);
+
+    /**
      * Do we have validators.
      * 
      * @return  bool

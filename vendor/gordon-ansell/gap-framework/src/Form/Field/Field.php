@@ -67,6 +67,12 @@ class Field extends Html implements FieldInterface
     protected $filters = [];
 
     /**
+     * Input filters.
+     * @var FilterInterface[]
+     */
+    protected $inputFilters = [];
+
+    /**
      * Validators.
      * @var ValidatorInterface[]
      */
@@ -122,6 +128,8 @@ class Field extends Html implements FieldInterface
                 $this->label->setData($params['label']);
                 unset($params['label']);
             }
+
+            $this->n = $params['name'];
         }
 
         $this->allowAutoWrap = $allowAutoWrap;
@@ -229,6 +237,34 @@ class Field extends Html implements FieldInterface
     }
 
     /**
+     * Add an input filter.
+     * 
+     * @param   FilterInterface     $filter     New filter.
+     * @return  FieldInterface 
+     */
+    public function addInputFilter(FilterInterface $filter): FieldInterface
+    {
+        $this->inputFilters[] = $filter;
+        return $this;
+    }
+
+    /**
+     * Filter the field for input.
+     * 
+     * @param   mixed   $source     Source to filter.
+     * @return  mixed
+     */
+    public function inputFilter($source)
+    {
+        if (count($this->inputFilters) > 0) {
+            foreach ($this->inputFilters as $filter) {
+                $source = $filter->filter($source);
+            }
+        }
+        return $source;
+    }
+
+    /**
      * Do we have validators.
      * 
      * @return  bool
@@ -305,8 +341,6 @@ class Field extends Html implements FieldInterface
      */
     public function render(?string $data = null, ?array $extraParams = null): string
     {
-
-
         if ($this->form->getAutofocus() == $this->getName()) {
             $this->setParam('autofocus', true);
         }

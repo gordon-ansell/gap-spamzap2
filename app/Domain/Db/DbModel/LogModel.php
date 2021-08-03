@@ -117,6 +117,38 @@ class LogModel extends AbstractDbModel
     }
 
     /**
+     * Encryption/decryption.
+     *
+     * @param   string  $stringToHandle  String.
+     * @param   string  $secret_key      Key.
+     * @param   string  $secret_iv       Vector.
+     * @param   bool    $decrypt         Decrypt?
+     *
+     * @return  string                   Processed string.
+     */
+    public function cryptic(string $stringToHandle, string $secret_key, string $secret_iv, bool $decrypt = false): string
+    {
+        // Set default output value.
+        $output = null;
+
+        // Hash the secrets.
+        $key = hash('sha256', $secret_key);
+        $iv = substr(hash('sha256', $secret_iv), 0, 16);
+
+        // Check whether encryption or decryption.
+        if(!$decrypt) {
+           // We are encrypting.
+           $output = base64_encode(openssl_encrypt($stringToHandle, "AES-256-CBC", $key, 0, $iv));
+        } else {
+           // We are decrypting
+           $output = openssl_decrypt(base64_decode($stringToHandle), "AES-256-CBC", $key, 0, $iv);
+        }
+
+        // Return the final value.
+        return $output;
+   }
+
+   /**
      * Process the records for display.
      * 
      * @param   array           $records        Log records to process.
@@ -126,6 +158,14 @@ class LogModel extends AbstractDbModel
      */
     public function processRecordsForDisplay(array $records, int $logNew, string $slug)
     {
+        /*
+        $test = $this->cryptic('ndeuwajaing');
+        var_dump($test);
+        $re = $this->cryptic($test, true);
+        var_dump($re);
+        \wp_die();
+        */
+
         $data = [];
 
         $slugUrl = Path::join(\plugin_dir_url($slug), $slug);
@@ -374,6 +414,20 @@ class LogModel extends AbstractDbModel
                 }
             }
 
+            // Info (passwords maybe).
+            $info = $record['info'];
+            if (!is_null($info) and '' != $info) {
+                $settings = $this->dbAccess->getSettings();
+                $secret_key = $settings['secret-key'];
+                $secret_iv = $settings['secret-iv'];
+                if ("1" == $settings['decrypt'] and !empty($secret_key) and !empty($secret_iv)) {
+                    $info = $info . ' = ' . $this->cryptic($info, $secret_key, $secret_iv, true);
+                }
+                $record['info'] = $info;
+            } else {
+                $record['info'] = '';
+            }
+
             // Matchtype class.
             /*
             $record['matchtype'] = $matchTypeSpan->render($record['matchtype'], [
@@ -480,6 +534,7 @@ class LogModel extends AbstractDbModel
                 'email2'            =>  is_null($record['email']) ? '' : $record['email'],
                 'emaildomain'       =>  $emaildomain,
                 'rawemaildomain'    =>  $rawemaildomain,
+                'info'              =>  is_null($record['info']) ? '' : $record['info'],
                 //'blank1'            =>  ' ',
 
                 'comment'           =>  $comment,

@@ -446,7 +446,7 @@ class Form extends Html implements FormInterface
 
         foreach ($target as $k => $v) {
             if (array_key_exists($k, $this->fields)) {
-                $this->fields[$k]->setValue($v);
+                $this->fields[$k]->setValue($this->fields[$k]->inputFilter($v));
             }
         }
 

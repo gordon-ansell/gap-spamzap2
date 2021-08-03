@@ -74,6 +74,7 @@ class TypeCodes
     const MT_BLOCK_ALL          =   13;
     const MT_LP_ERROR           =   14;
     const MT_LOGIN_ERROR        =   15;
+    const MT_LOGIN_AUTH         =   16;
 
     // MATCH type strings.
     const TYPESTRS_MT = [
@@ -92,5 +93,6 @@ class TypeCodes
         self::MT_BLOCK_ALL          => "Block All",
         self::MT_LP_ERROR           => "Lost Pass Error",
         self::MT_LOGIN_ERROR        => "Login Error",
+        self::MT_LOGIN_AUTH         => "Auth Process", 
     ];
 }
