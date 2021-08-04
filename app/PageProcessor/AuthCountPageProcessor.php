@@ -94,7 +94,10 @@ class AuthCountPageProcessor extends AbstractPageProcessor implements PageProces
 
         $model = $this->parent->getApp()->get('authcountmodel');
         $recs = $model->listAll('latest', 'desc');
-        $table = $this->createTable($recs);
+        $table = null;
+        if (count($recs) > 0) {
+            $table = $this->createTable($recs);
+        }
 
         $tplData = [
             'msgs'              =>  $msgs,
