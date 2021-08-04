@@ -456,11 +456,14 @@ class Checker
         // --------------------------------------------------------------------------
         // If nothing has been blocked we just allow it.
         // --------------------------------------------------------------------------
-        $logData = $data;
-        $logData['matchtype']   = TypeCodes::MT_PASSED;
-        $logData['dt'] = $this->getDt();
-        $logData['status'] = TypeCodes::STATUS_ALLOW;
-        $lm->create($logData);
+        if (TypeCodes::TYPE_LOGIN != $data['type']) {
+            $logData = $data;
+            $logData['matchtype']   = TypeCodes::MT_PASSED;
+            $logData['dt'] = $this->getDt();
+            $logData['status'] = TypeCodes::STATUS_ALLOW;
+            $lm->create($logData);
+        }
+        
         return [true, null];
     }
 }
