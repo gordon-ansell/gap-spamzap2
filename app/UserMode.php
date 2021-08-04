@@ -15,6 +15,7 @@ use App\Domain\TypeCodes;
 use GreenFedora\Wordpress\PluginUser;
 use GreenFedora\Wordpress\PluginUserInterface;
 use App\Domain\Checker;
+use GreenFedora\IP\IPAddress;
 
 /**
  * User-side handling class.
@@ -259,39 +260,66 @@ class UserMode extends PluginUser implements PluginUserInterface
             list($status, $info) = $this->checker->doCheck($checkBlock);
             if (false === $status) {
                 \wp_die('Suspected trouble maker - go away');
-            } else {
-                $msg = '';
-                if (\is_wp_error($user)) {
-                    $msg = $user->get_error_message(); 
-                } else {
-                    $userinfo = \get_user_by('login', $username);
-                    $userid = 0;
-                    $msg = "User does not exists";
-                    if (false !== $userinfo) {
-                        $msg = "User exists";
-                        $userid = $userinfo->ID;
-                    }
-                }
-                $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
-                $data['username'] = $username;
-                $data['userid'] = $userid;
-                $data['matchtype'] = TypeCodes::MT_LOGIN_AUTH;
-                $data['matchval'] = $msg;
-                $data['dt'] = $this->getDt();
-
-                if (\is_wp_error($user)) {
-                    $data['status'] = TypeCodes::STATUS_ERROR;
-                } else {
-                    $data['status'] = TypeCodes::STATUS_ALLOW;
+            } else if (!empty($username) or ($user instanceof \WP_User)) {
+                
+                // Get the IP.
+                $cfg = $this->getApp()->getConfig('plugin');
+                $ip = IPAddress::getClientIp();
+                if (true === $cfg['usedefip'] and ('::1' == $ip or 'localhost' == $ip or '127.0.0.1' == $ip)) {
+                    $ip = $cfg['defaultip'];
                 }
 
+                // Is this IP allowed?
+                $ipallowmodel = $this->getApp()->get('ipallowmodel');
+                if (!is_null($ipallowmodel->isCovered($ip, true))) {
+                    // Don't create any record for allowed IP addresses.
+                    return $user;
+                }
+
+                // Deal with username.
+                $un = $username;
+                if (empty($un) and ($user instanceof \WP_User)) {
+                    $un = $user->user_login;
+                }
+                
+                // Deal with user ID.
+                $userinfo = \get_user_by('login', $un);
+                $userid = 0;
+                $userexists = 0;
+                if (false !== $userinfo) {
+                    $userid = $userinfo->ID;
+                    $userexists = 1;
+                }
+
+                // Create the model.
+                $alm = $this->getApp()->get('authlogmodel');
+
+                // Deal with the password.
                 $secret_key = $this->settings['secret-key'];
                 $secret_iv = $this->settings['secret-iv'];
-                if (!empty($secret_key) and !empty($secret_iv)) {
-                    $lm = $this->getApp()->get('logmodel');
-                    $data['info'] = $lm->cryptic($password, $secret_key, $secret_iv);
+                $pwd = '';
+                if (!empty($secret_key) and !empty($secret_iv) and !empty($password)) {
+                    $pwd = $alm->cryptic($password, $secret_key, $secret_iv);
                 }
-                $lm->create($data);    
+
+                // Create the database record.
+                $dt = $this->getDt();
+                $record = [
+                    'dt'            =>  $dt,
+                    'ip'            =>  $ip,
+                    'username'      =>  $un,
+                    'userid'        =>  $userid,
+                    'userexists'    =>  $userexists,
+                    'pwd'           =>  $pwd,
+                ];
+
+                // Call the DB model to create the record.
+                $alm->create($record);
+
+                // Increment the count.
+                $acm = $this->getApp()->get('authcountmodel');
+                $acm->incrementCount($ip, $dt);
+
             }
 
         }

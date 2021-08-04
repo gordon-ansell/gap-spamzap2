@@ -14,6 +14,8 @@ namespace App;
 use App\PageProcessor\AddRulePageProcessor;
 use App\PageProcessor\ManageRulesPageProcessor;
 use App\PageProcessor\LogPageProcessor;
+use App\PageProcessor\AuthLogPageProcessor;
+use App\PageProcessor\AuthCountPageProcessor;
 use App\PageProcessor\LookupIpPageProcessor;
 use App\PageProcessor\OptionsPageProcessor;
 use GreenFedora\Wordpress\PluginAdmin;
@@ -92,6 +94,22 @@ class AdminMode extends PluginAdmin implements PluginAdminInterface
         );
         \add_submenu_page(
             $this->cfg->slug,
+            "SpamZap2 Auth Logs",
+            "Auth Logs",
+            'manage_options',
+            $this->cfg->slug . "-auth-logs",
+            array($this, 'adminPageAuthLogs')
+        );
+        \add_submenu_page(
+            $this->cfg->slug,
+            "SpamZap2 Auth Counts",
+            "Auth Counts",
+            'manage_options',
+            $this->cfg->slug . "-auth-count",
+            array($this, 'adminPageAuthCount')
+        );
+        \add_submenu_page(
+            $this->cfg->slug,
             "SpamZap2 Lookup IP",
             "Lookup IP",
             'manage_options',
@@ -113,6 +131,40 @@ class AdminMode extends PluginAdmin implements PluginAdminInterface
         }
 
         $pp = new LogPageProcessor($this);
+        $pp->process();
+
+    }
+
+    /**
+     * Auth logs page.
+     * 
+     * @return  
+     */
+    public function adminPageAuthLogs()
+    {
+        // Check user is authorised.
+        if (!\current_user_can('manage_options')) {
+            \wp_die($this->__('You do not have sufficient permissions to access this page.'));
+        }
+
+        $pp = new AuthLogPageProcessor($this);
+        $pp->process();
+
+    }
+
+    /**
+     * Auth count page.
+     * 
+     * @return  
+     */
+    public function adminPageAuthCount()
+    {
+        // Check user is authorised.
+        if (!\current_user_can('manage_options')) {
+            \wp_die($this->__('You do not have sufficient permissions to access this page.'));
+        }
+
+        $pp = new AuthCountPageProcessor($this);
         $pp->process();
 
     }

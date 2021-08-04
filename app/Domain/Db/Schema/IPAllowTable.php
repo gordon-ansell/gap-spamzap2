@@ -33,7 +33,8 @@ class IPAllowTable extends Table
             ->addColumnText('range_start')
             ->addColumnText('range_end')
             ->addColumnBigInt('range_start_long')
-            ->addColumnBigInt('range_end_long');
+            ->addColumnBigInt('range_end_long')
+            ->addColumnText('desc', '');
     }
 
     /**

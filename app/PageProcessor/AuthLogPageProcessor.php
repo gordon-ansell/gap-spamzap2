@@ -19,9 +19,9 @@ use GreenFedora\Html\TableMaker\Pager;
 use GreenFedora\Html\TableMaker\PagerInterface;
 
 /**
- * Log page processor.
+ * Auth log page processor.
  */
-class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInterface
+class AuthLogPageProcessor extends AbstractPageProcessor implements PageProcessorInterface
 {
     /**
      * Create the log table.
@@ -30,15 +30,12 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
      */
     protected function createLogTable(): TableMakerInterface
     {
-        $table = new TableMaker(['id' =>'log-table', 'name' => 'log-table']);
+        $table = new TableMaker(['id' =>'authlog-table', 'name' => 'authlog-table']);
         $table->thead()
             ->addColumn('Date/Time', 'dt', 'size-15 left')
-            ->addColumn('Typ', 'type', 'size-2 left')
             ->addColumn('IP', null, 'size-12 left')
             ->addColumn('User', 'username', 'size-10 left')
-            ->addColumn('Email', null, 'size-21 left breakword hide2')
-            ->addColumn('Match Type', null, 'size-12 left')
-            ->addColumn('Match Val', null, 'size-28 left');
+            ->addColumn('User Exists', 'userexists', 'size-10 left');
 
         return $table;
     }
@@ -53,16 +50,7 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
         $table = new TableMaker([], 'vertical');
         $table->thead()
             ->addColumn('Username', 'username2')
-            ->addColumn('Email', 'email2')
-            ->addColumn('Email Domain')
-            ->addColumn('Raw Email Domain')
-            ->addColumn('Info')
-            ->addColumn('Author URL', 'commentauthorurl')
-            ->addColumn('Author Domain', 'commentauthordom')
-            ->addColumn('Post Title', 'commentposttitle')
-            ->addColumn('Post ID', 'commentpostid')
-            ->addColumn('Comment')
-            ->addColumn('Comment Domains')
+            ->addColumn('Password', 'pwd')
             ->addColumn('IP', 'ip2')
             ->addColumn('Seen (IP/24)', 'seen')
             ->addColumn('CIDR(s)', 'cidrs')
@@ -89,16 +77,10 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
     {
         $count = 1;
         foreach ($records as $record) {
-            $class = 'status-' . strtolower($record['status']);
-            if ("1" == $record['isdummy']) {
-                $class .= ' dummy';
-            }
-            $table->tbody()->addRow($count, $record, $class);
-            if ('Inf' != $record['rawtype']) {
-                $subtable = $this->createLogSubTable();
-                $subtable->tbody()->addRow(1, $record);
-                $table->tbody()->getRow($count)->addSubRow(1, $subtable);
-            }
+            $table->tbody()->addRow($count, $record);
+            $subtable = $this->createLogSubTable();
+            $subtable->tbody()->addRow(1, $record);
+            $table->tbody()->getRow($count)->addSubRow(1, $subtable);
             $count++;
         }
 
@@ -115,18 +97,18 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
         $mt = microtime(true);
 
         // Get the model and create the table.
-        $lm = $this->parent->getApp()->get('logmodel');
+        $alm = $this->parent->getApp()->get('authlogmodel');
         $tm = $this->createLogTable();
 
         // Flag new records.
-        $logCount = $lm->getSimpleCount();
+        $logCount = $alm->getSimpleCount();
         $settings = $this->parent->getApp()->get('dbaccess')->getSettings(true);
-        $logOld = intval($settings['log-count']);
+        $logOld = intval($settings['authlog-count']);
         $logNew = $logCount - $logOld;
 
         // Create the pager.
         $pageLink = $logUrl = \admin_url('admin.php') . '?page=spamzap2';
-        $totalRecs = $lm->recordCount();
+        $totalRecs = $alm->recordCount();
         $page = 1;
         if (isset($_GET['pg'])) {
             $page = intval($_GET['pg']);
@@ -134,11 +116,11 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
         $pager = new Pager($page, $totalRecs, intval($settings['log-lines']), $pageLink);
 
         // Process the database records for display.
-        $records = $lm->getRecords($pager->startRec());
+        $records = $alm->getRecords($pager->startRec());
 
         // If we have some records.
         if (count($records) > 0) {
-            $processed = $lm->processRecordsForDisplay($records, $logNew, 
+            $processed = $alm->processRecordsForDisplay($records, $logNew, 
                 $this->parent->getApp()->getConfig('plugin.slug'));
 
             // Load the records in to the table.
@@ -149,7 +131,7 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
 
         // Update the count for flagging new records.
         $sm = $this->parent->getApp()->get('settingsmodel');
-        $sm->update('log-count', ['value' => strval($logCount)]);
+        $sm->update('authlog-count', ['value' => strval($logCount)]);
 
         // Clear down the message fields.
         $msgs = [];
@@ -178,7 +160,7 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
 
         $template = $this->parent->getApp()->get('template');
 
-        echo $template->render('adminLogs', $tplData);
+        echo $template->render('adminAuthLogs', $tplData);
 
     }
 

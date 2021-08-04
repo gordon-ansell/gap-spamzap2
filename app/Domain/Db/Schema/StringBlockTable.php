@@ -30,7 +30,8 @@ class StringBlockTable extends Table
             ->addColumnText('item')
             ->addColumnTinyInt('isregex', 0)
             ->addColumnTinyInt('username')
-            ->addColumnTinyInt('comment');
+            ->addColumnTinyInt('comment')
+            ->addColumnText('desc', '');
     }
 
     /**

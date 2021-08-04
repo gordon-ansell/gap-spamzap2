@@ -75,6 +75,9 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                 $form->addField('inputtext', ['name' => 'ip-block', 'label' => 'Block IP Address', 
                     'placeholder' => '192.168.0.0/16', 'title' => "Enter an IP address or CIDR to block.", 'style' => 'width: 10em'])
                     ->addValidator(new IPAddressPossibleCIDRValidator(['IP block']));
+    
+                $form->addField('inputtext', ['name' => 'ip-block-desc', 'label' => 'IP Block Description', 
+                    'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
 
             $form->addField('divclose', ['name' => 'row1close']);
 
@@ -89,6 +92,9 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                     'options' => ['yes' => 'Yes', 'no' => 'No'], 'style' => 'width: 10em',
                     'title' => "Do you want to use this domain block as a regular expression?"]);
 
+                $form->addField('inputtext', ['name' => 'domain-block-desc', 'label' => 'Domain Block Description', 
+                    'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
+
             $form->addField('divclose', ['name' => 'row2close']);
 
             // Row three.
@@ -102,25 +108,14 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                     'options' => ['yes' => 'Yes', 'no' => 'No'], 'style' => 'width: 10em',
                     'title' => "Do you want to use this email block as a regular expression?"]);
 
+                $form->addField('inputtext', ['name' => 'email-block-desc', 'label' => 'Email Block Description', 
+                    'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
+
             $form->addField('divclose', ['name' => 'row3close']);
 
+
             // Row four.
-            /*
             $form->addField('divopen', ['name' => 'row4', 'class' => 'three-columns']);
-
-                $form->addField('inputtext', ['name' => 'user-block', 'label' => 'Username', 
-                    'title' => "Enter a user name to block.", 'style' => 'width: 20em']);
-
-
-                $form->addField('radioset', ['name' => 'isuserregex', 'label' => 'Is User Block Regex?', 'class' => 'radio', 
-                    'options' => ['yes' => 'Yes', 'no' => 'No'], 'style' => 'width: 10em',
-                    'title' => "Do you want to use this user block as a regular expression?"]);
-
-            $form->addField('divclose', ['name' => 'row4close']);
-            */
-
-            // Row five.
-            $form->addField('divopen', ['name' => 'row5', 'class' => 'three-columns']);
 
                 $form->addField('inputtext', ['name' => 'string-block', 'label' => 'String', 
                     'placeholder' => '', 'title' => "Enter a string or regex to block.", 'style' => 'width: 20em']);
@@ -137,7 +132,16 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
 
                 $form->addField('spanclose', ['name' => 'cbsetclose']);
 
+            $form->addField('divclose', ['name' => 'row4close']);
+
+            // Row five.
+            $form->addField('divopen', ['name' => 'row5', 'class' => 'three-columns']);
+
+                $form->addField('inputtext', ['name' => 'string-block-desc', 'label' => 'String Block Description', 
+                    'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
+
             $form->addField('divclose', ['name' => 'row5close']);
+
 
         $form->addField('divclose', ['name' => 'blocksclose']);
 
@@ -149,6 +153,9 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
 
             $form->addField('inputtext', ['name' => 'ip-allow', 'label' => 'Allow IP Address', 
                 'placeholder' => '192.168.0.0/16', 'title' => "Enter an IP address to allow.", 'style' => 'width: 10em']);
+
+            $form->addField('inputtext', ['name' => 'ip-allow-desc', 'label' => 'IP Allow Description', 
+                'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
 
         $form->addField('divclose', ['name' => 'allowsclose']);
 
@@ -175,30 +182,40 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
     {
         $dt = $this->getDt();
         $logUrl = \admin_url('admin.php') . '?page=spamzap2';
+        $authLogUrl = \admin_url('admin.php') . '?page=spamzap2-auth-logs';
+        $authCountUrl = \admin_url('admin.php') . '?page=spamzap2-auth-count';
+
+        $desc = isset($_GET['desc']) ? $_GET['desc'] : '';
+        $back = $logUrl;
+        if (isset($_GET['back']) and 'authlog' == $_GET['back']) {
+            $back = $authLogUrl;
+        } else if (isset($_GET['back']) and 'authcount' == $_GET['back']) {
+            $back = $authCountUrl;
+        }
 
         if (isset($_GET['ip'])) {
             $validator = new IPAddressPossibleCIDRValidator([], null, null, false);
             if ($validator->validate($_GET['ip'])) {
-                list($m, $e) = $this->addIPBlock($dt, $_GET['ip']);
+                list($m, $e) = $this->addIPBlock($dt, $_GET['ip'], $desc);
                 $_SESSION['sz2-m'] = $m;
                 $_SESSION['sz2-e'] = $e;
             } else {
                 unset($_SESSION['sz2-m']);
                 $_SESSION['sz2-e'] = ["IP address invalid."];
             }
-            echo("<script>location.href = '" . $logUrl . "'</script>");
+            echo("<script>location.href = '" . $back . "'</script>");
            return;
         } else if (isset($_GET['domain'])) {
-            list($m, $e) = $this->addDomainBlock($dt, $_GET['domain'], 'no');
+            list($m, $e) = $this->addDomainBlock($dt, $_GET['domain'], 'no', $desc);
             $_SESSION['sz2-m'] = $m;
             $_SESSION['sz2-e'] = $e;
-            echo("<script>location.href = '" . $logUrl . "'</script>");
+            echo("<script>location.href = '" . $back . "'</script>");
             return;
         } else if (isset($_GET['email'])) {
-            list($m, $e) = $this->addEmailBlock($dt, $_GET['email'], 'no');
+            list($m, $e) = $this->addEmailBlock($dt, $_GET['email'], 'no', $desc);
             $_SESSION['sz2-m'] = $m;
             $_SESSION['sz2-e'] = $e;
-            echo("<script>location.href = '" . $logUrl . "'</script>");
+            echo("<script>location.href = '" . $back . "'</script>");
             return;
         }
 
@@ -217,17 +234,22 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
             }
             if ($form->validate($_POST)) {
                 $ipBlock = $_POST['ip-block'];
+                $ipBlockDesc = $_POST['ip-block-desc'];
+
                 $ipAllow = $_POST['ip-allow'];
+                $ipAllowDesc = $_POST['ip-allow-desc'];
 
                 $domainBlock = $_POST['domain-block'];
                 $isdomainregex = $_POST['isdomainregex'];
+                $domainBlockDesc = $_POST['domain-block-desc'];
 
                 $emailBlock = $_POST['email-block'];
                 $isemailregex = $_POST['isemailregex'];
+                $emailBlockDesc = $_POST['email-block-desc'];
 
                 $stringBlock = $_POST['string-block'];
                 $isstringregex = $_POST['isstringregex'];
-
+                $stringBlockDesc = $_POST['string-block-desc'];
                 $applytouser = $_POST['applyto_user'];
                 $applytocomment = $_POST['applyto_comment'];
 
@@ -237,14 +259,14 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
 
                     // Domain block.
                     if (!empty($domainBlock)) {
-                        list($m, $e) = $this->addDomainBlock($dt, $domainBlock, $isdomainregex);
+                        list($m, $e) = $this->addDomainBlock($dt, $domainBlock, $isdomainregex, $domainBlockDesc);
                         if (!is_null($m)) $msgs[] = $m;
                         if (!is_null($e)) $errors[] = $e;
                     }
 
                     // Email block.
                     if (!empty($emailBlock)) {
-                        list($m, $e) = $this->addEmailBlock($dt, $emailBlock, $isemailregex);
+                        list($m, $e) = $this->addEmailBlock($dt, $emailBlock, $isemailregex, $emailBlockDesc);
                         if (!is_null($m)) $msgs[] = $m;
                         if (!is_null($e)) $errors[] = $e;
                     }
@@ -253,21 +275,21 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                     if (!empty($stringBlock)) {
                         $atu = ($applytouser) ? 1 : 0;
                         $atc = ($applytocomment) ? 1 : 0;
-                        list($m, $e) = $this->addStringBlock($dt, $stringBlock, $isstringregex, $atc, $atu);
+                        list($m, $e) = $this->addStringBlock($dt, $stringBlock, $isstringregex, $atc, $atu, $stringBlockDesc);
                         if (!is_null($m)) $msgs[] = $m;
                         if (!is_null($e)) $errors[] = $e;
                     }
 
                     // IP block.
                     if (!empty($ipBlock)) {
-                        list($m, $e) = $this->addIPBlock($dt, $ipBlock);
+                        list($m, $e) = $this->addIPBlock($dt, $ipBlock, $ipBlockDesc);
                         if (!is_null($m)) $msgs[] = $m;
                         if (!is_null($e)) $errors[] = $e;
                     }
 
                     // IP allow.
                     if (!empty($ipAllow)) {
-                        list($m, $e) = $this->addIPAllow($dt, $ipAllow);
+                        list($m, $e) = $this->addIPAllow($dt, $ipAllow, $ipAllowDesc);
                         if (!is_null($m)) $msgs[] = $m;
                         if (!is_null($e)) $errors[] = $e;
                     }
@@ -298,10 +320,12 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
      * @param   string      $isregex        Regex?
      * @param   string      $comment        Apply to comment?
      * @param   string      $user           Apply to user?
+     * @param   string      $desc           Description.
      * 
      * @return  array                       (msg, error)
      */
-    protected function addstringBlock(string $dt, string $stringBlock, string $isregex, int $comment, int $user): array
+    protected function addStringBlock(string $dt, string $stringBlock, string $isregex, int $comment, 
+        int $user, string $desc = ''): array
     {
         $msg = null;
         $error = null;
@@ -313,7 +337,8 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
             $error = sprintf("String block neither applies to comments or usernames. Ignored.");
         } else {
             $ir = ('yes' == $isregex) ? 1 : 0;
-            $dbm->create(['item' => $stringBlock, 'dt' => $dt, 'isregex' => $ir, 'comment' => $comment, 'username' => $user]);
+            $dbm->create(['item' => $stringBlock, 'dt' => $dt, 'isregex' => $ir, 'comment' => $comment, 
+                'username' => $user, 'desc' => $desc]);
             $lm = $this->parent->getApp()->get('logmodel');
             $rec = [
                 'type' => TypeCodes::TYPE_INFO,
@@ -335,10 +360,11 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
      * @param   string      $dt             Date/Time.
      * @param   string      $emailBlock     Email to block.
      * @param   string      $isregex        Regex?
+     * @param   string      $desc           Description.
      * 
      * @return  array                       (msg, error)
      */
-    protected function addEmailBlock(string $dt, string $emailBlock, string $isregex): array
+    protected function addEmailBlock(string $dt, string $emailBlock, string $isregex, string $desc = ''): array
     {
         $msg = null;
         $error = null;
@@ -348,7 +374,7 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
             $error = sprintf("We are already blocking email '%s'.", stripslashes($emailBlock));
         } else {
             $ir = ('yes' == $isregex) ? 1 : 0;
-            $dbm->create(['item' => $emailBlock, 'dt' => $dt, 'isregex' => $ir]);
+            $dbm->create(['item' => $emailBlock, 'dt' => $dt, 'isregex' => $ir, 'desc' => $desc]);
             $lm = $this->parent->getApp()->get('logmodel');
             $rec = [
                 'type' => TypeCodes::TYPE_INFO,
@@ -370,10 +396,11 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
      * @param   string      $dt             Date/Time.
      * @param   string      $domainBlock    Domain to block.
      * @param   string      $isregex        Regex?
+     * @param   string      $desc           Description.
      * 
      * @return  array                       (msg, error)
      */
-    protected function addDomainBlock(string $dt, string $domainBlock, string $isregex): array
+    protected function addDomainBlock(string $dt, string $domainBlock, string $isregex, string $desc = ''): array
     {
         $msg = null;
         $error = null;
@@ -383,7 +410,7 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
             $error = sprintf("We are already blocking domain '%s'.", stripslashes($domainBlock));
         } else {
             $ir = ('yes' == $isregex) ? 1 : 0;
-            $dbm->create(['item' => $domainBlock, 'dt' => $dt, 'isregex' => $ir]);
+            $dbm->create(['item' => $domainBlock, 'dt' => $dt, 'isregex' => $ir, 'desc' => $desc]);
             $lm = $this->parent->getApp()->get('logmodel');
             $rec = [
                 'type' => TypeCodes::TYPE_INFO,
@@ -404,10 +431,11 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
      * 
      * @param   string      $dt             Date/Time.
      * @param   string      $ipBlock        IP to block.
+     * @param   string      $desc           Description.
      * 
      * @return  array                       (msg, error)
      */
-    protected function addIPBlock(string $dt, string $ipBlock): array
+    protected function addIPBlock(string $dt, string $ipBlock, string $desc = ''): array
     {
         $msg = null;
         $error = null;
@@ -420,7 +448,7 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
         if (!is_null($iscovered)) {
             $error = sprintf("We are already blocking IP '%s' via: %s.", $ipBlock, $iscovered);
         } else {
-            $ipbm->create(['ip' => $ipBlock, 'dt' => $dt]);
+            $ipbm->create(['ip' => $ipBlock, 'dt' => $dt, 'desc' => $desc]);
             $lm = $this->parent->getApp()->get('logmodel');
             $rec = [
                 'type' => TypeCodes::TYPE_INFO,
@@ -449,10 +477,11 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
      * 
      * @param   string      $dt             Date/Time.
      * @param   string      $ipBlock        IP to allow.
+     * @param   string      $desc           Description.
      * 
      * @return  array                       (msg, error)
      */
-    protected function addIPAllow(string $dt, string $ipAllow): array
+    protected function addIPAllow(string $dt, string $ipAllow, string $desc = ''): array
     {
         $msg = null;
         $error = null;
@@ -465,7 +494,7 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
         if (!is_null($iscovered)) {
             $error = sprintf("We are already allowing IP '%s' via: %s.", $ipAllow, $iscovered);
         } else {
-            $ipam->create(['ip' => $ipAllow, 'dt' => $dt]);
+            $ipam->create(['ip' => $ipAllow, 'dt' => $dt, 'desc' => $desc]);
             $lm = $this->parent->getApp()->get('logmodel');
             $rec = [
                 'type' => TypeCodes::TYPE_INFO,

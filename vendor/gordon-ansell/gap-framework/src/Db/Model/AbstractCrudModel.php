@@ -42,15 +42,16 @@ abstract class AbstractCrudModel
      * List all entries.
      * 
      * @param   string      $order  Column to order by.
+     * @param   string      $dir    Direction.
      * @return  array
      */
-    public function listAll(?string $order = null): array
+    public function listAll(?string $order = null, string $dir = 'asc'): array
     {
         if (is_null($order)) {
             $order = $this->tableName . '_id';
         }
         return $this->getDb()->select($this->tableName)
-            ->order($order)
+            ->order($order, $dir)
             ->fetchArray();
     }
 

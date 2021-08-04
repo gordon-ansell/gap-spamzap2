@@ -22,6 +22,8 @@ use App\Domain\Db\DbModel\IPBlockModel;
 use App\Domain\Db\DbModel\IPAllowModel;
 use App\Domain\Db\DbModel\IPLookupModel;
 use App\Domain\Db\DbModel\LogModel;
+use App\Domain\Db\DbModel\AuthLogModel;
+use App\Domain\Db\DbModel\AuthCountModel;
 use App\Domain\Db\DbModel\SettingsModel;
 use GreenFedora\Template\Template;
 use App\Template\Driver\SpamZapTemplateDriver;
@@ -54,6 +56,8 @@ class App extends WordpressApplication
         $this->registerSingleton('ipallowmodel', IPAllowModel::class);
         $this->registerSingleton('iplookupmodel', IPLookupModel::class);
         $this->registerSingleton('logmodel', LogModel::class);
+        $this->registerSingleton('authlogmodel', AuthLogModel::class);
+        $this->registerSingleton('authcountmodel', AuthCountModel::class);
         $this->registerSingleton('settingsmodel', SettingsModel::class);
 
         return $this;

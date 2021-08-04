@@ -48,11 +48,13 @@ class SettingsTable extends Table
         $this->db->insert('settings', ['settings_id' => 'check-auths', 'value' => '0'])->execute();
         $this->db->insert('settings', ['settings_id' => 'log-lines', 'value' => '250'])->execute();
         $this->db->insert('settings', ['settings_id' => 'log-count', 'value' => '0'])->execute();
+        $this->db->insert('settings', ['settings_id' => 'authlog-count', 'value' => '0'])->execute();
         $this->db->insert('settings', ['settings_id' => 'manage-rules-sel', 'value' => '1'])->execute();
         $this->db->insert('settings', ['settings_id' => 'github-token', 'value' => ''])->execute();
         $this->db->insert('settings', ['settings_id' => 'block-all', 'value' => '0'])->execute();
         $this->db->insert('settings', ['settings_id' => 'decrypt', 'value' => '0'])->execute();
         $this->db->insert('settings', ['settings_id' => 'secret-key', 'value' => ''])->execute();
         $this->db->insert('settings', ['settings_id' => 'secret-iv', 'value' => ''])->execute();
+        $this->db->insert('settings', ['settings_id' => 'auth-warning-limit', 'value' => '10'])->execute();
     }
 }

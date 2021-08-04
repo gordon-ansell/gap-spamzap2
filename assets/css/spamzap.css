@@ -641,37 +641,37 @@ tr.dummy {
   margin: 0 auto;
 }
 
-table#log-table {
+table#log-table, table#authlog-table {
   font-size: 85%;
 }
-table#log-table .icon.plus, table#log-table .icon.minus, table#log-table .icon.blank {
+table#log-table .icon.plus, table#log-table .icon.minus, table#log-table .icon.blank, table#authlog-table .icon.plus, table#authlog-table .icon.minus, table#authlog-table .icon.blank {
   padding-right: 0.5em;
 }
-table#log-table .icon.minus {
+table#log-table .icon.minus, table#authlog-table .icon.minus {
   display: none;
 }
-table#log-table .status-allow {
+table#log-table .status-allow, table#authlog-table .status-allow {
   background-color: rgba(0, 128, 0, 0.15);
 }
-table#log-table .status-block, table#log-table .status-error {
+table#log-table .status-block, table#log-table .status-error, table#authlog-table .status-block, table#authlog-table .status-error {
   background-color: rgba(255, 0, 0, 0.15);
 }
-table#log-table .status-info {
+table#log-table .status-info, table#authlog-table .status-info {
   background-color: rgba(255, 165, 0, 0.15);
 }
-table#log-table .subrow {
+table#log-table .subrow, table#authlog-table .subrow {
   display: none;
 }
-table#log-table .subrow .icon {
+table#log-table .subrow .icon, table#authlog-table .subrow .icon {
   padding-right: 0.25em;
 }
-table#log-table .newrec {
+table#log-table .newrec, table#authlog-table .newrec {
   font-weight: bold;
 }
-table#log-table .ipseen {
+table#log-table .ipseen, table#authlog-table .ipseen {
   color: red;
 }
-table#log-table .dummy {
+table#log-table .dummy, table#authlog-table .dummy {
   font-style: italic;
   color: grey;
 }

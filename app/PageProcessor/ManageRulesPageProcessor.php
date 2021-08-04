@@ -94,7 +94,8 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
         $table->thead()
             ->addColumn('ID', $idfield, 'size-8 left')
             ->addColumn('Date/Time', 'dt', 'size-15 left')
-            ->addColumn('IP', null, 'size-15 left');
+            ->addColumn('IP', null, 'size-15 left')
+            ->addColumn('Desc', null, 'size-50 left');
 
         $slug = $this->parent->getApp()->getConfig('plugin.slug');
         $slugUrl = Path::join(\plugin_dir_url($slug), $slug);
@@ -143,7 +144,8 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
             ->addColumn('ID', $idfield, 'size-8 left')
             ->addColumn('Date/Time', 'dt', 'size-15 left')
             ->addColumn('Value', 'item', 'size-50 left')
-            ->addColumn('Is Regex?', 'isregex', 'size-8 left');
+            ->addColumn('Is Regex?', 'isregex', 'size-8 left')
+            ->addColumn('Desc', null, 'size-19 left');
 
         $slug = $this->parent->getApp()->getConfig('plugin.slug');
         $slugUrl = Path::join(\plugin_dir_url($slug), $slug);
@@ -193,10 +195,11 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
         $table->thead()
             ->addColumn('ID', $idfield, 'size-8 left')
             ->addColumn('Date/Time', 'dt', 'size-15 left')
-            ->addColumn('Value', 'item', 'size-40 left')
-            ->addColumn('Usernames?', 'username', 'size-8 left')
-            ->addColumn('Comments?', 'comment', 'size-8 left')
-            ->addColumn('Is Regex?', 'isregex', 'size-8 left');
+            ->addColumn('Value', 'item', 'size-25 left')
+            ->addColumn('Usernames?', 'username', 'size-5 left')
+            ->addColumn('Comments?', 'comment', 'size-5 left')
+            ->addColumn('Is Regex?', 'isregex', 'size-8 left')
+            ->addColumn('Desc', null, 'size-20 left');
 
         $slug = $this->parent->getApp()->getConfig('plugin.slug');
         $slugUrl = Path::join(\plugin_dir_url($slug), $slug);

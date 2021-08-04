@@ -14,9 +14,9 @@ namespace App\Domain\Db\Schema;
 use GreenFedora\Db\Schema\Table;
 
 /**
- * Domain block table.
+ * Auth log table.
  */
-class DomainBlockTable extends Table
+class AuthLogTable extends Table
 {
     /**
      * Initialisation.
@@ -27,9 +27,11 @@ class DomainBlockTable extends Table
     {
         $this->addColumnPrimaryAuto()
             ->addColumnText('dt')
-            ->addColumnTinyInt('isregex', 0)
-            ->addColumnText('item')
-            ->addColumnText('desc', '');
+            ->addColumnText('username')
+            ->addColumnInt('userid', 0, ['null' => true])
+            ->addColumnText('pwd')
+            ->addColumnText('ip')
+            ->addColumnTinyInt('userexists', 0);
     }
 
     /**

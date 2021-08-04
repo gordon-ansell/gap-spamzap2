@@ -30,9 +30,10 @@ interface CrudModelInterface
      * List all entries.
      * 
      * @param   string      $order  Column to order by.
+     * @param   string      $dir    Direction.
      * @return  array
      */
-    public function listAll(?string $order = null): array;
+    public function listAll(?string $order = null, string $dir = 'asc'): array;
 
     /**
      * Fetch a particular entry.

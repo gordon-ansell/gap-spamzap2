@@ -28,7 +28,8 @@ class EmailBlockTable extends Table
         $this->addColumnPrimaryAuto()
             ->addColumnText('dt')
             ->addColumnTinyInt('isregex', 0)
-            ->addColumnText('item');
+            ->addColumnText('item')
+            ->addColumnText('desc', '');
     }
 
     /**

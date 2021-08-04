@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gordon-ansell/gap-framework.git",
-                "reference": "36b325965e6d6f5c94d05f71da95e91f7b95ddbf"
+                "reference": "7f7adfc4e9ea843a740cf9919b5b9cca54ba3d2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gordon-ansell/gap-framework/zipball/36b325965e6d6f5c94d05f71da95e91f7b95ddbf",
-                "reference": "36b325965e6d6f5c94d05f71da95e91f7b95ddbf",
+                "url": "https://api.github.com/repos/gordon-ansell/gap-framework/zipball/7f7adfc4e9ea843a740cf9919b5b9cca54ba3d2f",
+                "reference": "7f7adfc4e9ea843a740cf9919b5b9cca54ba3d2f",
                 "shasum": ""
             },
             "require": {
@@ -65,7 +65,7 @@
                 "source": "https://github.com/gordon-ansell/gap-framework/tree/main",
                 "issues": "https://github.com/gordon-ansell/gap-framework/issues"
             },
-            "time": "2021-08-03T07:23:52+00:00"
+            "time": "2021-08-04T10:34:01+00:00"
         },
         {
             "name": "gordon-ansell/gap-phpwhois",
