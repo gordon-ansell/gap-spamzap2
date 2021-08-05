@@ -158,14 +158,6 @@ class LogModel extends AbstractDbModel
      */
     public function processRecordsForDisplay(array $records, int $logNew, string $slug)
     {
-        /*
-        $test = $this->cryptic('ndeuwajaing');
-        var_dump($test);
-        $re = $this->cryptic($test, true);
-        var_dump($re);
-        \wp_die();
-        */
-
         $data = [];
 
         $slugUrl = Path::join(\plugin_dir_url($slug), $slug);
@@ -326,6 +318,11 @@ class LogModel extends AbstractDbModel
                 $record['dt'] = $blankIconR . $record['dt'];
             }
 
+            // Dup?
+            if (intval($record['dupcount']) > 1) {
+                $record['dt'] = $record['dt'] . ' (' . $record['dupcount'] . ')';
+            }
+
             // Type.
             $record['rawtype'] = $record['type'];
             if ('Inf' == $record['type']) {
@@ -444,6 +441,63 @@ class LogModel extends AbstractDbModel
     }
 
     /**
+     * Create an entry.
+     * 
+     * @param   array         $data       Data to create record with.
+     * @return  mixed                     Return the insert ID.
+     */
+    public function create(array $data)
+    {
+        $latest = $this->getLatestRecord();
+        if (!is_null($latest) and TypeCodes::TYPE_COMMENT != $data['type'] and
+            (
+                $data['ip'] == $latest['ip'] and
+                $data['username'] == $latest['username'] and
+                intval($data['type']) == intval($latest['type']) and
+                intval($data['status']) == intval($latest['status']) and
+                intval($data['matchtype']) == intval($latest['matchtype']) and
+                $data['matchval'] == $latest['matchval']
+             )) {
+
+            $this->incrementCount(intval($latest[$this->tableName . '_id']));
+        } else {
+            return parent::create($data);
+        }
+    }
+
+    /**
+     * Increment the count for a log record.
+     * 
+     * @param   int     $id     ID.
+     * @return  void
+     */
+    public function incrementCount(int $id)
+    {
+        $curr = $this->getDb()->select($this->tableName)
+            ->where($this->tableName . '_id', $id)
+            ->fetchColumnOfFirstRecord('dupcount');
+
+        $new = $curr + 1;
+
+        $this->update($id, ['dupcount' => $new]);
+    }
+
+    /**
+     * Get the latest record.
+     * 
+     * @return array|null
+     */
+    public function getLatestRecord(): ?array
+    {
+        $data = $this->getDb()->select($this->tableName)
+            ->order('dt', 'desc')
+            ->limit(1)
+            ->fetchFirst();
+
+        return $data;
+    }
+
+    /**
      * List all entries.
      * 
      * @param   int      $start      Start record.
@@ -529,6 +583,7 @@ class LogModel extends AbstractDbModel
                 'ip'        =>  $ip,
                 'email'     =>  is_null($record['email']) ? '' : $record['email'],
                 'isdummy'   =>  $record['isdummy'],
+                'dupcount'  =>  $record['dupcount'],
 
                 'username2'         =>  is_null($record['username']) ? '' : $record['username'],      
                 'email2'            =>  is_null($record['email']) ? '' : $record['email'],

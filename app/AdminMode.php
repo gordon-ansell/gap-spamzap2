@@ -14,8 +14,7 @@ namespace App;
 use App\PageProcessor\AddRulePageProcessor;
 use App\PageProcessor\ManageRulesPageProcessor;
 use App\PageProcessor\LogPageProcessor;
-use App\PageProcessor\AuthLogPageProcessor;
-use App\PageProcessor\AuthCountPageProcessor;
+use App\PageProcessor\TechLogPageProcessor;
 use App\PageProcessor\LookupIpPageProcessor;
 use App\PageProcessor\OptionsPageProcessor;
 use GreenFedora\Wordpress\PluginAdmin;
@@ -94,27 +93,19 @@ class AdminMode extends PluginAdmin implements PluginAdminInterface
         );
         \add_submenu_page(
             $this->cfg->slug,
-            "SpamZap2 Auth Logs",
-            "Auth Logs",
-            'manage_options',
-            $this->cfg->slug . "-auth-logs",
-            array($this, 'adminPageAuthLogs')
-        );
-        \add_submenu_page(
-            $this->cfg->slug,
-            "SpamZap2 Auth Counts",
-            "Auth Counts",
-            'manage_options',
-            $this->cfg->slug . "-auth-count",
-            array($this, 'adminPageAuthCount')
-        );
-        \add_submenu_page(
-            $this->cfg->slug,
             "SpamZap2 Lookup IP",
             "Lookup IP",
             'manage_options',
             $this->cfg->slug . "-lookup-ip",
             array($this, 'adminPageLookupIp')
+        );
+        \add_submenu_page(
+            $this->cfg->slug,
+            "SpamZap2 Tech Logs",
+            "Tech Logs",
+            'manage_options',
+            $this->cfg->slug . "-tech-logs",
+            array($this, 'adminPageTechLogs')
         );
     }
 
@@ -140,31 +131,14 @@ class AdminMode extends PluginAdmin implements PluginAdminInterface
      * 
      * @return  
      */
-    public function adminPageAuthLogs()
+    public function adminPageTechLogs()
     {
         // Check user is authorised.
         if (!\current_user_can('manage_options')) {
             \wp_die($this->__('You do not have sufficient permissions to access this page.'));
         }
 
-        $pp = new AuthLogPageProcessor($this);
-        $pp->process();
-
-    }
-
-    /**
-     * Auth count page.
-     * 
-     * @return  
-     */
-    public function adminPageAuthCount()
-    {
-        // Check user is authorised.
-        if (!\current_user_can('manage_options')) {
-            \wp_die($this->__('You do not have sufficient permissions to access this page.'));
-        }
-
-        $pp = new AuthCountPageProcessor($this);
+        $pp = new TechLogPageProcessor($this);
         $pp->process();
 
     }

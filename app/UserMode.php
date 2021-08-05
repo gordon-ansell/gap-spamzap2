@@ -52,8 +52,8 @@ class UserMode extends PluginUser implements PluginUserInterface
 
         // Add a check to run when a comment is posted.
         if ('1' == $this->settings['check-comments']) {
-            \add_filter('preprocess_comment', array($this, 'preprocessCommentFilter'), 
-                $this->app->getConfig('plugin.priority'), 1);
+            \add_filter('pre_comment_approved', array($this, 'preprocessCommentFilter'), 
+                $this->app->getConfig('plugin.priority'), 2);
         }
 
         // Add a check for contact form 7.
@@ -84,6 +84,66 @@ class UserMode extends PluginUser implements PluginUserInterface
 
     }
 
+        /**
+     * Called when a comment is posted.
+     * 
+     * @param   array   $commentdata    Comment data.
+     * 
+     * @return  mixed                   Possibly updates comment data.
+     */
+    public function preprocessCommentFilter($approved, array $commentdata)
+    {
+        if (\is_wp_error($approved)) {
+            $data = $this->checker->createCheckBlock(TypeCodes::TYPE_COMMENT);
+            $data['matchtype'] = TypeCodes::MT_COMMENT_ERROR;
+            $data['matchval'] = strip_tags($approved->get_error_message(), '<strong>');
+            $data['dt'] = $this->getDt();
+            $data['status'] = TypeCodes::STATUS_ERROR;
+            $data['username'] = $commentdata['comment_author'];
+            $data['userid'] = $commentdata['user_id'];
+            $lm = $this->getApp()->get('logmodel');
+            $lm->create($data);    
+            return $approved;
+        }
+
+        $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_COMMENT);
+
+        $checkBlock['username']             = $commentdata['comment_author'];
+        $checkBlock['email']                = $commentdata['comment_author_email'];
+        $checkBlock['commentauthorurl']     = $commentdata['comment_author_url'];
+        $checkBlock['comment']              = $commentdata['comment_content'];
+        $checkBlock['userid']               = $commentdata['user_id'];
+        $checkBlock['commentpostid']        = $commentdata['comment_post_ID'];
+
+        $cpid = $commentdata['comment_post_ID'];
+        if (!empty($cpid) and !is_null($cpid) and 0 != $cpid) {
+            $checkBlock['commentposttitle'] = \get_the_title($cpid);
+        }
+
+        list($status, $info) = $this->checker->doCheck($checkBlock);
+
+        if ("1" == $this->settings['dummy-mode']) {
+            return $commentdata;
+        }
+
+        if (false === $status) {
+            echo '<pre class="spam">';
+            echo "SSSSSSSS   PPPPPPPP      A       M       M" . '<br />' . PHP_EOL;
+            echo "S          P      P    A   A     MM     MM" . '<br />' . PHP_EOL;
+            echo "SSSSSSSS   PPPPPPPP   AAAAAAA    M M   M M" . '<br />' . PHP_EOL;
+            echo "       S   P         A       A   M   M   M" . '<br />' . PHP_EOL;
+            echo "SSSSSSSS   P        A         A  M       M" . '<br />' . PHP_EOL;
+            echo "</pre>";
+
+            echo '<div><a href="https://en.wikipedia.org/wiki/Forum_spam">More details.</a></div>';
+            sleep(3);
+
+            wp_die(__('Suspected spam. The comment has not been posted.'));
+        }
+
+        return $approved;
+    }
+
     /**
      * Called when a comment is posted.
      * 
@@ -91,6 +151,7 @@ class UserMode extends PluginUser implements PluginUserInterface
      * 
      * @return  array                   Possibly updates comment data.
      */
+    /*
     public function preprocessCommentFilter(array $commentdata): array
     {
         $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_COMMENT);
@@ -130,6 +191,7 @@ class UserMode extends PluginUser implements PluginUserInterface
 
         return $commentdata;
     }
+    */
 
     /**
      * Called after a new user tries to register.
@@ -259,72 +321,11 @@ class UserMode extends PluginUser implements PluginUserInterface
             $checkBlock['username'] = $username;
             list($status, $info) = $this->checker->doCheck($checkBlock);
             if (false === $status) {
+                return new \WP_Error('authorization_failed', 'Suspected trouble maker - go away');
                 \wp_die('Suspected trouble maker - go away');
-            } else if (!empty($username) or ($user instanceof \WP_User)) {
-                
-                // Get the IP.
-                $cfg = $this->getApp()->getConfig('plugin');
-                $ip = IPAddress::getClientIp();
-                if (true === $cfg['usedefip'] and ('::1' == $ip or 'localhost' == $ip or '127.0.0.1' == $ip)) {
-                    $ip = $cfg['defaultip'];
-                }
-
-                // Is this IP allowed?
-                $ipallowmodel = $this->getApp()->get('ipallowmodel');
-                if (!is_null($ipallowmodel->isCovered($ip, true))) {
-                    // Don't create any record for allowed IP addresses.
-                    return $user;
-                }
-
-                // Deal with username.
-                $un = $username;
-                if (empty($un) and ($user instanceof \WP_User)) {
-                    $un = $user->user_login;
-                }
-                
-                // Deal with user ID.
-                $userinfo = \get_user_by('login', $un);
-                $userid = 0;
-                $userexists = 0;
-                if (false !== $userinfo) {
-                    $userid = $userinfo->ID;
-                    $userexists = 1;
-                }
-
-                // Create the model.
-                $alm = $this->getApp()->get('authlogmodel');
-
-                // Deal with the password.
-                $secret_key = $this->settings['secret-key'];
-                $secret_iv = $this->settings['secret-iv'];
-                $pwd = '';
-                if (!empty($secret_key) and !empty($secret_iv) and !empty($password)) {
-                    $pwd = $alm->cryptic($password, $secret_key, $secret_iv);
-                }
-
-                // Create the database record.
-                $dt = $this->getDt();
-                $record = [
-                    'dt'            =>  $dt,
-                    'ip'            =>  $ip,
-                    'username'      =>  $un,
-                    'userid'        =>  $userid,
-                    'userexists'    =>  $userexists,
-                    'pwd'           =>  $pwd,
-                ];
-
-                // Call the DB model to create the record.
-                $alm->create($record);
-
-                // Increment the count.
-                $acm = $this->getApp()->get('authcountmodel');
-                $acm->incrementCount($ip, $dt);
-
-            }
-
+            } 
         }
 
         return $user;
-
     }
 }

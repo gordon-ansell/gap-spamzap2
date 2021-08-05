@@ -135,6 +135,7 @@ class Checker
     public function doCheck(array $data, ?\WP_Error &$errors = null): array
     {
         // Load the settings.
+        $settingsmodel = $this->getApp()->get('settingsmodel');
         $settings = $this->getApp()->get('dbaccess')->getSettings();
  
         // Load some database stuff.

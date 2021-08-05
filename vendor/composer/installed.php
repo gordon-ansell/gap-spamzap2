@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'aa4c031db8ba470fb476408c26c76a51f0e30637',
+        'reference' => '3c78465d64c2f8a789bddf5bb7941dc2e7b4c9c2',
         'name' => 'gordon-ansell/gap-spamzap2',
         'dev' => true,
     ),
@@ -18,7 +18,7 @@
             'aliases' => array(
                 0 => '9999999-dev',
             ),
-            'reference' => '7f7adfc4e9ea843a740cf9919b5b9cca54ba3d2f',
+            'reference' => '3c9d897fffdd482704aa164b881135aefa29950d',
             'dev_requirement' => false,
         ),
         'gordon-ansell/gap-phpwhois' => array(
@@ -38,7 +38,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'aa4c031db8ba470fb476408c26c76a51f0e30637',
+            'reference' => '3c78465d64c2f8a789bddf5bb7941dc2e7b4c9c2',
             'dev_requirement' => false,
         ),
         'jakeasmith/http_build_url' => array(

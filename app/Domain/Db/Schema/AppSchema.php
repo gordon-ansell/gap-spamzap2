@@ -32,8 +32,7 @@ class AppSchema extends Schema
         EmailBlockTable::class => 'emailblock',
         StringBlockTable::class => 'stringblock',
         LogTable::class => 'log',
-        AuthLogTable::class => 'authlog',
-        AuthCountTable::class => 'authcount',
+        TechLogTable::class => 'techlog',
         SettingsTable::class => 'settings',
     );
 }

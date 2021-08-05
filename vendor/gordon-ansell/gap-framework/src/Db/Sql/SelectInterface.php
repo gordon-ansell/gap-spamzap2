@@ -145,6 +145,21 @@ interface SelectInterface extends WhereUserInterface, OrderUserInterface, LimitU
     public function fetchArray() : array;
 
     /**
+     * Fetch first record of data.
+     *
+     * @return  array|null
+     */
+    public function fetchFirst() : ?array;
+
+    /**
+     * Fetch a column of the first record of data.
+     *
+     * @param   string  $col    Column to fetch.
+     * @return  mixed
+     */
+    public function fetchColumnOfFirstRecord(string $col);
+
+    /**
      * Get the cache SQL.
      * 
      * @return  string

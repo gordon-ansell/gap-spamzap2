@@ -51,7 +51,7 @@ class PdoDriver extends AbstractDriver implements DriverInterface
             $dsn = 'mysql:dbname=' . $this->config->name . ';host=' . $this->config->host . ';port=' . $this->config->port;
         } else if ('sqlite' === $platform) {
             if (!file_exists(dirname($this->config->path))) {
-                mkdir($this->config->path, 0777, true);
+                mkdir(dirname($this->config->path), 0777, true);
             }
             $dsn = 'sqlite:' . $this->config->path;
         } else {

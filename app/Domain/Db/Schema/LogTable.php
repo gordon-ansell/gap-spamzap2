@@ -33,6 +33,7 @@ class LogTable extends Table
             ->addColumnText('ip')
             ->addColumnInt('type')
             ->addColumnInt('status')
+            ->addColumnInt('dupcount', 1)
             ->addColumnInt('matchtype')
             ->addColumnText('matchval')
             ->addColumnText('commentauthorurl')

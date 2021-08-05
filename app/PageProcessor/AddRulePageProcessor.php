@@ -182,16 +182,9 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
     {
         $dt = $this->getDt();
         $logUrl = \admin_url('admin.php') . '?page=spamzap2';
-        $authLogUrl = \admin_url('admin.php') . '?page=spamzap2-auth-logs';
-        $authCountUrl = \admin_url('admin.php') . '?page=spamzap2-auth-count';
 
         $desc = isset($_GET['desc']) ? $_GET['desc'] : '';
         $back = $logUrl;
-        if (isset($_GET['back']) and 'authlog' == $_GET['back']) {
-            $back = $authLogUrl;
-        } else if (isset($_GET['back']) and 'authcount' == $_GET['back']) {
-            $back = $authCountUrl;
-        }
 
         if (isset($_GET['ip'])) {
             $validator = new IPAddressPossibleCIDRValidator([], null, null, false);
@@ -224,9 +217,6 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
 
         $msgs = [];
         $errors = [];
-
-        //var_dump($_REQUEST);
-        //throw new \Exception('123');
 
         if (isset($_POST['form-submitted']) and $_POST['form-submitted'] === 'add-rule') {
             if (!\wp_verify_nonce($_REQUEST['_wpnonce'], 'add-rule')) {
@@ -443,7 +433,6 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
         $ipbm = $this->parent->getApp()->get('ipblockmodel');
         $iscovered = $ipbm->isCovered($ipBlock);
         $isoverriding = $ipbm->isOverriding($ipBlock);
-
 
         if (!is_null($iscovered)) {
             $error = sprintf("We are already blocking IP '%s' via: %s.", $ipBlock, $iscovered);

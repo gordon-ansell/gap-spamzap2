@@ -75,6 +75,7 @@ class TypeCodes
     const MT_LP_ERROR           =   14;
     const MT_LOGIN_ERROR        =   15;
     const MT_LOGIN_AUTH         =   16;
+    const MT_COMMENT_ERROR      =   17;
 
     // MATCH type strings.
     const TYPESTRS_MT = [
@@ -94,5 +95,6 @@ class TypeCodes
         self::MT_LP_ERROR           => "Lost Pass Error",
         self::MT_LOGIN_ERROR        => "Login Error",
         self::MT_LOGIN_AUTH         => "Auth Process", 
+        self::MT_COMMENT_ERROR      => "Comment Error",
     ];
 }

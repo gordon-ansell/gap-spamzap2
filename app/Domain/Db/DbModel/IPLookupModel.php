@@ -66,7 +66,21 @@ class IPLookupModel extends AbstractDbModel
             'ipl_networkstatus'     =>  $temp['networkstatus'],
         ];
 
-        return $this->create($data);
+        if ($this->hasEntry($ip)) {
+            $owt = ($ow) ? 'true' : 'false';
+            $msg = sprintf("IPLookup table already has an entry for IP address '%s' (overwrite: %s).", $ip, $owt);
+            app()->get('techlogmodel')->addError($msg);
+            throw new \Exception($msg);
+        }
+
+        $result = null;
+        try {
+            $result = $this->create($data);
+        } catch (\Exception $e) {
+            app()->get('techlogmodel')->addError("Exception %s in addLookup().", $e->getMessage());
+        }
+
+        return $result;
     }
 
 }

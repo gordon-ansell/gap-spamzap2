@@ -407,6 +407,38 @@ class Select extends AbstractSql implements SelectInterface
     }
 
     /**
+     * Fetch first record of data.
+     *
+     * @return  array|null
+     */
+    public function fetchFirst() : ?array
+    {
+        $arr = $this->fetchArray();
+        if (count($arr) > 0) {
+            return $arr[0];
+        }
+        return null;
+    }
+
+    /**
+     * Fetch a column of the first record of data.
+     *
+     * @param   string  $col    Column to fetch.
+     * @return  mixed
+     */
+    public function fetchColumnOfFirstRecord(string $col)
+    {
+        $data = $this->fetchFirst();
+        if (!is_null($data)) {
+            if (!array_key_exists($col, $data)) {
+                throw new DbSqlException(sprintf("DB table does not have a '%s' column."));
+            }
+            return $data[$col];
+        }
+        return null;
+    }
+
+    /**
      * Get the cache SQL.
      * 
      * @return  string

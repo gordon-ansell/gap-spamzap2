@@ -125,7 +125,7 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
         $logNew = $logCount - $logOld;
 
         // Create the pager.
-        $pageLink = $logUrl = \admin_url('admin.php') . '?page=spamzap2';
+        $pageLink =  \admin_url('admin.php') . '?page=spamzap2';
         $totalRecs = $lm->recordCount();
         $page = 1;
         if (isset($_GET['pg'])) {

@@ -1,5 +1,5 @@
 <div class="ghp">
-    <h1>SpamZap2 Auth Logs</h1>
+    <h1>SpamZap2 Tech Logs</h1>
 </div>
 
 <?php if (count($msgs) > 0 or count($errors) > 0): ?> 
@@ -20,14 +20,6 @@
         <?php endif ?>
     </div>
 <?php endif ?>
-
-<div class="logstats">
-    <?php if (1 == $lognew): ?>
-        <p><?= $lognew ?> new entry.</p>
-    <?php else: ?>
-        <p><?= $lognew ?> new entries.</p>
-    <?php endif ?>
-</div>
 
 <?php if (!is_null($tm)): ?>
     <?= $tm->render() ?>    

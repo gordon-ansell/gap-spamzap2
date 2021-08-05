@@ -19,9 +19,9 @@ use GreenFedora\Html\TableMaker\Pager;
 use GreenFedora\Html\TableMaker\PagerInterface;
 
 /**
- * Auth log page processor.
+ * Tech log page processor.
  */
-class AuthLogPageProcessor extends AbstractPageProcessor implements PageProcessorInterface
+class TechLogPageProcessor extends AbstractPageProcessor implements PageProcessorInterface
 {
     /**
      * Create the log table.
@@ -30,39 +30,14 @@ class AuthLogPageProcessor extends AbstractPageProcessor implements PageProcesso
      */
     protected function createLogTable(): TableMakerInterface
     {
-        $table = new TableMaker(['id' =>'authlog-table', 'name' => 'authlog-table']);
+        $table = new TableMaker(['id' =>'techlog-table', 'name' => 'techlog-table']);
         $table->thead()
             ->addColumn('Date/Time', 'dt', 'size-15 left')
             ->addColumn('IP', null, 'size-12 left')
-            ->addColumn('User', 'username', 'size-10 left')
-            ->addColumn('User Exists', 'userexists', 'size-10 left');
+            ->addColumn('Type', null, 'size-10 left')
+            ->addColumn('Message', null, 'size-50 left');
 
         return $table;
-    }
-
-    /**
-     * Create the log sub table.
-     * 
-     * @return  TableMakerInterface
-     */
-    protected function createLogSubTable(): TableMakerInterface
-    {
-        $table = new TableMaker([], 'vertical');
-        $table->thead()
-            ->addColumn('Username', 'username2')
-            ->addColumn('Password', 'pwd')
-            ->addColumn('IP', 'ip2')
-            ->addColumn('Seen (IP/24)', 'seen')
-            ->addColumn('CIDR(s)', 'cidrs')
-            ->addColumn('Name')
-            ->addColumn('Network Name', 'netname')
-            ->addColumn('Country')
-            ->addColumn('Address')
-            ->addColumn('Domain')
-            ->addColumn('Network Status');
-        
-        return $table;
-
     }
 
     /**
@@ -77,10 +52,14 @@ class AuthLogPageProcessor extends AbstractPageProcessor implements PageProcesso
     {
         $count = 1;
         foreach ($records as $record) {
-            $table->tbody()->addRow($count, $record);
-            $subtable = $this->createLogSubTable();
-            $subtable->tbody()->addRow(1, $record);
-            $table->tbody()->getRow($count)->addSubRow(1, $subtable);
+            if ('1' == $record['type']) {
+                $record['type'] = 'Error';
+            } else if ('2' == $record['type']) {
+                $record['type'] = 'Debug';
+            } else if ('3' == $record['type']) {
+                $record['type'] = 'Info';
+            }
+            $table->tbody()->addRow($count, $record, strtolower($record['type']));
             $count++;
         }
 
@@ -97,17 +76,14 @@ class AuthLogPageProcessor extends AbstractPageProcessor implements PageProcesso
         $mt = microtime(true);
 
         // Get the model and create the table.
-        $alm = $this->parent->getApp()->get('authlogmodel');
+        $alm = $this->parent->getApp()->get('techlogmodel');
         $tm = $this->createLogTable();
 
-        // Flag new records.
-        $logCount = $alm->getSimpleCount();
+        // Get the settings.
         $settings = $this->parent->getApp()->get('dbaccess')->getSettings(true);
-        $logOld = intval($settings['authlog-count']);
-        $logNew = $logCount - $logOld;
 
         // Create the pager.
-        $pageLink = $logUrl = \admin_url('admin.php') . '?page=spamzap2';
+        $pageLink = $logUrl = \admin_url('admin.php') . '?page=spamzap2-tech-logs';
         $totalRecs = $alm->recordCount();
         $page = 1;
         if (isset($_GET['pg'])) {
@@ -120,18 +96,11 @@ class AuthLogPageProcessor extends AbstractPageProcessor implements PageProcesso
 
         // If we have some records.
         if (count($records) > 0) {
-            $processed = $alm->processRecordsForDisplay($records, $logNew, 
-                $this->parent->getApp()->getConfig('plugin.slug'));
-
             // Load the records in to the table.
-            $this->loadRecords($tm, $processed, $pager);
+            $this->loadRecords($tm, $records, $pager);
         } else {
             $tm = null;
         }
-
-        // Update the count for flagging new records.
-        $sm = $this->parent->getApp()->get('settingsmodel');
-        $sm->update('authlog-count', ['value' => strval($logCount)]);
 
         // Clear down the message fields.
         $msgs = [];
@@ -154,13 +123,12 @@ class AuthLogPageProcessor extends AbstractPageProcessor implements PageProcesso
             'msgs'          =>  $msgs,
             'errors'        =>  $errors,
             'elapsed'       =>  $elapsed,
-            'lognew'        =>  $logNew,
             'tm'            =>  $tm,
         ];
 
         $template = $this->parent->getApp()->get('template');
 
-        echo $template->render('adminAuthLogs', $tplData);
+        echo $template->render('adminTechLogs', $tplData);
 
     }
 

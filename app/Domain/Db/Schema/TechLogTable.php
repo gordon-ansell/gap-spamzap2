@@ -14,9 +14,9 @@ namespace App\Domain\Db\Schema;
 use GreenFedora\Db\Schema\Table;
 
 /**
- * Auth count table.
+ * Tech log table.
  */
-class AuthCountTable extends Table
+class TechLogTable extends Table
 {
     /**
      * Initialisation.
@@ -26,11 +26,11 @@ class AuthCountTable extends Table
     protected function init()
     {
         $this->addColumnPrimaryAuto()
-            ->addColumnText('latest')
-            ->addColumnInt('ipcount', 0)
+            ->addColumnText('dt')
+            ->addColumnTinyInt('type', 1)
+            ->addColumnText('message')
             ->addColumnText('ip')
-            ->addColumnInt('iplong')
-            ->addColumnTinyInt('dealtwith', 0);
+            ->addColumnText('extra');
     }
 
     /**

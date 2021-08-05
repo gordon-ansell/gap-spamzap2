@@ -42,7 +42,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
      * Access token.
      * @var string
      */
-    protected $accessToken;
+    protected $accessToken = '';
 
     /**
      * GitHub API result.
@@ -70,7 +70,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
         $this->updatePath = $this->cfg->updatepath;
 
         $settings = $this->getApp()->get('dbaccess')->getSettings(true);
-        $this->accessToken = $settings['github-token'];
+        //$this->accessToken = $settings['github-token'];
  
         // Define the alternative API for updating checking
         \add_filter('pre_set_site_transient_update_plugins', array(&$this, 'checkUpdate'));

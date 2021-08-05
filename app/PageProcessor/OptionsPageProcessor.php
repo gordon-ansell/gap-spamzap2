@@ -33,8 +33,6 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
         $settings = $this->parent->getApp()->get('dbaccess')->getSettings(true);
         unset($settings['log-count']);
         unset($settings['manage-rules-sel']);
-        unset($settings['github-token']);
-        unset($settings['debug-mode']);
         return $settings;
 
         /*
@@ -135,22 +133,11 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "Run in dummy mode? This just will perform no actual blocks."]);
 
-        $form->addField('divclose', ['name' => 'row4close']);
-
-        // Row five.
-        $form->addField('divopen', ['name' => 'row5', 'class' => 'three-columns']);
-
-            $form->addField('radioset', ['name' => 'decrypt', 'label' => 'Decrypt Passwords', 'class' => 'radio', 
+            $form->addField('radioset', ['name' => 'debug-mode', 'label' => 'Debug Mode?', 'class' => 'radio', 
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
-                'title' => "Decrypt passwords for authentication attempts? SECURITY WARNING - THIS IS DANGEROUS."]);
+                'title' => "Run in debug mode? Writes debugging messages to the tech log."]);
 
-            $form->addField('inputtext', ['name' => 'secret-key', 'label' => 'Secret Key', 
-                'title' => "Secret key for encryption.", 'style' => 'width: 10em']);
-
-            $form->addField('inputtext', ['name' => 'secret-iv', 'label' => 'Secret Vector', 
-                'title' => "Secret vector for encryption.", 'style' => 'width: 10em']);
-
-        $form->addField('divclose', ['name' => 'row5close']);
+        $form->addField('divclose', ['name' => 'row4close']);
 
         // End stuff.
         $form->addField('buttonsubmit', ['name' => 'submit', 'value' => 'Submit', 'style' => 'width: 10em']);
@@ -189,8 +176,6 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 $settings = $this->parent->getApp()->get('dbaccess')->getSettings();
                 unset($settings['log-count']);
                 unset($settings['manage-rules-sel']);
-                unset($settings['github-token']);
-                unset($settings['debug-mode']);
                 $sm = $this->parent->getApp()->get('settingsmodel');
                 foreach(array_keys($settings) as $k) {
                     $sm->update($k, ['value' => strval($_POST[$k])]);
