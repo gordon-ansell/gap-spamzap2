@@ -187,15 +187,15 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
         $back = $logUrl;
 
         if (isset($_GET['ip'])) {
-            $validator = new IPAddressPossibleCIDRValidator([], null, null, false);
-            if ($validator->validate($_GET['ip'])) {
+            //$validator = new IPAddressPossibleCIDRValidator([], null, null, false);
+            //if ($validator->validate($_GET['ip'])) {
                 list($m, $e) = $this->addIPBlock($dt, $_GET['ip'], $desc);
                 $_SESSION['sz2-m'] = $m;
                 $_SESSION['sz2-e'] = $e;
-            } else {
-                unset($_SESSION['sz2-m']);
-                $_SESSION['sz2-e'] = ["IP address invalid."];
-            }
+            //} else {
+            //    unset($_SESSION['sz2-m']);
+            //    $_SESSION['sz2-e'] = ["IP address invalid."];
+            //}
             echo("<script>location.href = '" . $back . "'</script>");
            return;
         } else if (isset($_GET['domain'])) {
@@ -419,45 +419,59 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
     /**
      * Add an IP block.
      * 
-     * @param   string      $dt             Date/Time.
-     * @param   string      $ipBlock        IP to block.
-     * @param   string      $desc           Description.
+     * @param   string          $dt             Date/Time.
+     * @param   string          $ipBlock        IP to block.
+     * @param   string          $desc           Description.
      * 
      * @return  array                       (msg, error)
      */
     protected function addIPBlock(string $dt, string $ipBlock, string $desc = ''): array
     {
-        $msg = null;
-        $error = null;
+        $msg = [];
+        $error = [];
 
-        $ipbm = $this->parent->getApp()->get('ipblockmodel');
-        $iscovered = $ipbm->isCovered($ipBlock);
-        $isoverriding = $ipbm->isOverriding($ipBlock);
-
-        if (!is_null($iscovered)) {
-            $error = sprintf("We are already blocking IP '%s' via: %s.", $ipBlock, $iscovered);
+        $ips = [];
+        if (false !== strpos($ipBlock, ',')) {
+            $ips = explode(',', $ipBlock);
         } else {
-            $ipbm->create(['ip' => $ipBlock, 'dt' => $dt, 'desc' => $desc]);
-            $lm = $this->parent->getApp()->get('logmodel');
-            $rec = [
-                'type' => TypeCodes::TYPE_INFO,
-                'matchtype' => TypeCodes::MT_NEW_RULE, 
-                'matchval' => 'IP Block: ' . $ipBlock,
-                'dt' => $dt,
-                'status' => TypeCodes::STATUS_INFO,
-            ];
-            $lm->create($rec);
-            $msg = sprintf("Added IP block for '%s'.", $ipBlock); 
-            if (!is_null($isoverriding)) {
-                $or = [];
-                foreach ($isoverriding as $single) {
-                    $or[] = sprintf("%s from %s (%s).", $single[1], $this->convDt($single[2]), $single[0]);
+            $ips = [$ipBlock];
+        }
+
+        foreach ($ips as $item) {
+
+            $item = trim($item);
+
+            $ipbm = $this->parent->getApp()->get('ipblockmodel');
+            $iscovered = $ipbm->isCovered($item);
+            $isoverriding = $ipbm->isOverriding($item);
+
+            if (!is_null($iscovered)) {
+                $error[] = sprintf("We are already blocking IP '%s' via: %s.", $item, $iscovered);
+            } else {
+                $ipbm->create(['ip' => $item, 'dt' => $dt, 'desc' => $desc]);
+                $lm = $this->parent->getApp()->get('logmodel');
+                $rec = [
+                    'type' => TypeCodes::TYPE_INFO,
+                    'matchtype' => TypeCodes::MT_NEW_RULE, 
+                    'matchval' => 'IP Block: ' . $item,
+                    'dt' => $dt,
+                    'status' => TypeCodes::STATUS_INFO,
+                ];
+                $lm->create($rec);
+                $msg[] = sprintf("Added IP block for '%s'.", $item); 
+                if (!is_null($isoverriding)) {
+                    $or = [];
+                    foreach ($isoverriding as $single) {
+                        $or[] = sprintf("%s from %s (%s).", $single[1], $this->convDt($single[2]), $single[0]);
+                    }
+                    $msg[count($msg) - 1] .= "<br />Above entry overrides: <br />" . implode("<br />", $or);
+                    $ipbm->delete($single[0]);
                 }
-                $msg .= "<br />Above entry overrides: <br />" . implode("<br />", $or);
-                $ipbm->delete($single[0]);
             }
         }
 
+        $error = (0 == count($error)) ? null : implode('<br />', $error);
+        $msg = (0 == count($msg)) ? null : implode('<br />', $msg);
         return [$msg, $error];
     }
 
