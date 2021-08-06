@@ -120,6 +120,7 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
         
         foreach ($recs as $rec) {
             $rec['dt'] = $this->convDt($rec['dt']);
+            $rec['desc'] = stripslashes($rec['desc']);
             $delLink->setParam('href', $delUrl . '&id=' . $rec[$idfield]);
             $rec[$idfield] = $delLink->render($delIconR) . $rec[$idfield];
             $table->tbody()->addRow($count, $rec);
