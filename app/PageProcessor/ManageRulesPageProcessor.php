@@ -363,7 +363,7 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
         } else {
             $recs = $model->listAll('item');
             if (count($recs) > 0) {
-                $f = (3 == $ruleset) ? 'emailblock_id' : 'domainblock_id';
+                $f = (4 == $ruleset) ? 'emailblock_id' : 'domainblock_id';
                 $table = $this->createTable2($recs, $f);
             }
         }

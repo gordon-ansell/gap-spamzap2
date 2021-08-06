@@ -374,33 +374,36 @@ class LogModel extends AbstractDbModel
                 }
             }
 
+            // Match type for URL.
+            $mtencoded = urlencode($record['matchtype']);
+
             // IP icons.
             if ('' != $record['ip2'] and 'n/a' != $record['ip2']) {
-                $ipBanLink->setParam('href', $banUrl . '&ip=' . $record['ip2']);
-                $ipTempBanLink->setParam('href', $tempBanUrl . '&ip=' . $record['ip2']);
+                $ipBanLink->setParam('href', $banUrl . '&ip=' . $record['ip2'] . '&desc=' . $mtencoded);
+                $ipTempBanLink->setParam('href', $tempBanUrl . '&ip=' . $record['ip2'] . '&desc=' . $mtencoded);
                 $record['ip2'] = $ipBanLink->render($ipBanIconR) . ' ' . $ipTempBanLink->render($ipTempBanIconR) . $record['ip']; 
             }
 
             // CIDR icons.
             if ('' != $record['cidrs'] and 'n/a' != $record['cidrs']) {
-                $ipBanLink->setParam('href', $banUrl . '&ip=' . $record['cidrs']);
-                $ipTempBanLink->setParam('href', $tempBanUrl . '&ip=' . $record['cidrs']);
+                $ipBanLink->setParam('href', $banUrl . '&ip=' . $record['cidrs'] . '&desc=' . $mtencoded);
+                $ipTempBanLink->setParam('href', $tempBanUrl . '&ip=' . $record['cidrs'] . '&desc=' . $mtencoded);
                 $record['cidrs'] = $ipBanLink->render($cidrBanIconR) . ' ' . $ipTempBanLink->render($cidrTempBanIconR) . $record['cidrs']; 
             }
 
             // Domain block (email).
             if ('' != $record['emaildomain'] and 'n/a' != $record['emaildomain']) {
-                $domainBanLink->setParam('href', $banUrl . '&domain=' . $record['emaildomain']);
+                $domainBanLink->setParam('href', $banUrl . '&domain=' . $record['emaildomain'] . '&desc=' . $mtencoded);
                 $record['emaildomain'] = $domainBanLink->render($domainBanIconR) . $record['emaildomain']; 
             }
             if ('' != $record['rawemaildomain'] and 'n/a' != $record['rawemaildomain']) {
-                $domainBanLink->setParam('href', $banUrl . '&domain=' . $record['rawemaildomain']);
+                $domainBanLink->setParam('href', $banUrl . '&domain=' . $record['rawemaildomain'] . '&desc=' . $mtencoded);
                 $record['rawemaildomain'] = $domainBanLink->render($domainBanIconR) . $record['rawemaildomain']; 
             }
 
             // Domain block (authorurl).
             if ('' != $record['commentauthordom'] and 'n/a' != $record['commentauthordom']) {
-                $domainBanLink->setParam('href', $banUrl . '&domain=' . $record['commentauthordom']);
+                $domainBanLink->setParam('href', $banUrl . '&domain=' . $record['commentauthordom'] . '&desc=' . $mtencoded);
                 $record['commentauthordom'] = $domainBanLink->render($domainBanIconR) . $record['commentauthordom']; 
             }
 
@@ -412,7 +415,7 @@ class LogModel extends AbstractDbModel
                     if ('' != $cd) {
                         $cd .= ', ';
                     }
-                    $domainBanLink->setParam('href', $banUrl . '&domain=' . $item);
+                    $domainBanLink->setParam('href', $banUrl . '&domain=' . $item . '&desc=' . $mtencoded);
                     $cd .= $domainBanLink->render($domainBanIconR) . $item;
                 }
                 $record['commentdomains'] = $cd;
@@ -420,7 +423,7 @@ class LogModel extends AbstractDbModel
 
             // Email block.
             if ('' != $record['email2'] and 'n/a' != $record['email2']) {
-                $emailBanLink->setParam('href', $banUrl . '&email=' . $record['email2']);
+                $emailBanLink->setParam('href', $banUrl . '&email=' . $record['email2'] . '&desc=' . $mtencoded);
                 $record['email2'] = $emailBanLink->render($emailBanIconR) . $record['email2']; 
             }
 

@@ -200,7 +200,7 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
         $dt = $this->getDt();
         $logUrl = \admin_url('admin.php') . '?page=spamzap2';
 
-        $desc = isset($_GET['desc']) ? $_GET['desc'] : '';
+        $desc = isset($_GET['desc']) ? urldecode($_GET['desc']) : '';
         $back = $logUrl;
 
         if (isset($_GET['ip'])) {
