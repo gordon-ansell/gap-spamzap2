@@ -50,5 +50,9 @@ class SettingsTable extends Table
         $this->db->insert('settings', ['settings_id' => 'log-count', 'value' => '0'])->execute();
         $this->db->insert('settings', ['settings_id' => 'manage-rules-sel', 'value' => '1'])->execute();
         $this->db->insert('settings', ['settings_id' => 'block-all', 'value' => '0'])->execute();
+        $this->db->insert('settings', ['settings_id' => 'temp-block-days', 'value' => '365'])->execute();
+        $this->db->insert('settings', ['settings_id' => 'secret1', 'value' => 'Avengers21##^^'])->execute();
+        $this->db->insert('settings', ['settings_id' => 'secret2', 'value' => 'Assemble21##^^'])->execute();
+        $this->db->insert('settings', ['settings_id' => 'collect-password', 'value' => '1'])->execute();
     }
 }

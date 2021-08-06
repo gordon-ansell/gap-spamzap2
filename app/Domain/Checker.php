@@ -117,6 +117,7 @@ class Checker
             'ip'                    =>  $ip,
             'username'              =>  null,
             'userid'                =>  null,
+            'pwd'                   =>  null,
             'email'                 =>  null,
             'commentauthorurl'      =>  null,
             'isdummy'               =>  $dummy,
@@ -142,6 +143,7 @@ class Checker
         $lm = $this->getApp()->get('logmodel');
         $ipallowmodel = $this->getApp()->get('ipallowmodel');
         $ipblockmodel = $this->getApp()->get('ipblockmodel');
+        $iptempblockmodel = $this->getApp()->get('iptempblockmodel');
         $domainblockmodel = $this->getApp()->get('domainblockmodel');
         $emailblockmodel = $this->getApp()->get('emailblockmodel');
         $stringblockmodel = $this->getApp()->get('stringblockmodel');
@@ -220,6 +222,20 @@ class Checker
             $logData = $data;
             $logData['matchtype']   = TypeCodes::MT_IP_BLOCK;
             $logData['matchval'] = $isIPBlocked;
+            $logData['dt'] = $this->getDt();
+            $logData['status'] = TypeCodes::STATUS_BLOCK;
+            $lm->create($logData);
+            return [false, null];
+        }
+
+        // --------------------------------------------------------------------------
+        // Next do an IP TEMP block check.
+        // --------------------------------------------------------------------------
+        $isIPTempBlocked = $iptempblockmodel->isCovered($data['ip'], true);
+        if (!is_null($isIPTempBlocked)) {
+            $logData = $data;
+            $logData['matchtype']   = TypeCodes::MT_IP_TEMP_BLOCK;
+            $logData['matchval'] = $isIPTempBlocked;
             $logData['dt'] = $this->getDt();
             $logData['status'] = TypeCodes::STATUS_BLOCK;
             $lm->create($logData);

@@ -84,6 +84,18 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
             // Row two.
             $form->addField('divopen', ['name' => 'row2', 'class' => 'three-columns']);
 
+                $form->addField('inputtext', ['name' => 'ip-temp-block', 'label' => 'Temporary Block IP Address', 
+                    'placeholder' => '192.168.0.0/16', 'title' => "Enter an IP address or CIDR to block temporarily.", 'style' => 'width: 10em'])
+                    ->addValidator(new IPAddressPossibleCIDRValidator(['IP temporary block']));
+    
+                $form->addField('inputtext', ['name' => 'ip-temp-block-desc', 'label' => 'IP Temp Block Description', 
+                    'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
+
+            $form->addField('divclose', ['name' => 'row2close']);
+
+            // Row three.
+            $form->addField('divopen', ['name' => 'row3', 'class' => 'three-columns']);
+
                 $form->addField('inputtext', ['name' => 'domain-block', 'label' => 'Domain Name', 
                     'placeholder' => 'example.com', 'title' => "Enter a domain name to block. Applies to author URLs, email addresses and comments.", 
                     'style' => 'width: 20em']);
@@ -95,10 +107,10 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                 $form->addField('inputtext', ['name' => 'domain-block-desc', 'label' => 'Domain Block Description', 
                     'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
 
-            $form->addField('divclose', ['name' => 'row2close']);
+            $form->addField('divclose', ['name' => 'row3close']);
 
-            // Row three.
-            $form->addField('divopen', ['name' => 'row3', 'class' => 'three-columns']);
+            // Row four.
+            $form->addField('divopen', ['name' => 'row4', 'class' => 'three-columns']);
 
                 $form->addField('inputtext', ['name' => 'email-block', 'label' => 'Email Address', 
                     'placeholder' => 'someone@example.com', 'title' => "Enter an email address to block.", 'style' => 'width: 20em']);
@@ -111,11 +123,11 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                 $form->addField('inputtext', ['name' => 'email-block-desc', 'label' => 'Email Block Description', 
                     'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
 
-            $form->addField('divclose', ['name' => 'row3close']);
+            $form->addField('divclose', ['name' => 'row4close']);
 
 
-            // Row four.
-            $form->addField('divopen', ['name' => 'row4', 'class' => 'three-columns']);
+            // Row five.
+            $form->addField('divopen', ['name' => 'row5', 'class' => 'three-columns']);
 
                 $form->addField('inputtext', ['name' => 'string-block', 'label' => 'String', 
                     'placeholder' => '', 'title' => "Enter a string or regex to block.", 'style' => 'width: 20em']);
@@ -132,15 +144,15 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
 
                 $form->addField('spanclose', ['name' => 'cbsetclose']);
 
-            $form->addField('divclose', ['name' => 'row4close']);
+            $form->addField('divclose', ['name' => 'row5close']);
 
-            // Row five.
-            $form->addField('divopen', ['name' => 'row5', 'class' => 'three-columns']);
+            // Row six.
+            $form->addField('divopen', ['name' => 'row6', 'class' => 'three-columns']);
 
                 $form->addField('inputtext', ['name' => 'string-block-desc', 'label' => 'String Block Description', 
                     'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
 
-            $form->addField('divclose', ['name' => 'row5close']);
+            $form->addField('divclose', ['name' => 'row6close']);
 
 
         $form->addField('divclose', ['name' => 'blocksclose']);
@@ -151,11 +163,16 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
         // ALLOWS
         $form->addField('divopen', ['name' => 'allows', 'class' => 'sect']);
 
-            $form->addField('inputtext', ['name' => 'ip-allow', 'label' => 'Allow IP Address', 
-                'placeholder' => '192.168.0.0/16', 'title' => "Enter an IP address to allow.", 'style' => 'width: 10em']);
+            $form->addField('divopen', ['name' => 'row7', 'class' => 'three-columns']);
 
-            $form->addField('inputtext', ['name' => 'ip-allow-desc', 'label' => 'IP Allow Description', 
-                'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
+                $form->addField('inputtext', ['name' => 'ip-allow', 'label' => 'Allow IP Address', 
+                    'placeholder' => '192.168.0.0/16', 'title' => "Enter an IP address to allow.", 'style' => 'width: 10em']);
+
+                $form->addField('inputtext', ['name' => 'ip-allow-desc', 'label' => 'IP Allow Description', 
+                    'title' => "Optionally enter a description.", 'style' => 'width: 20em']);
+
+        
+            $form->addField('divclose', ['name' => 'row7close']);
 
         $form->addField('divclose', ['name' => 'allowsclose']);
 
@@ -187,15 +204,13 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
         $back = $logUrl;
 
         if (isset($_GET['ip'])) {
-            //$validator = new IPAddressPossibleCIDRValidator([], null, null, false);
-            //if ($validator->validate($_GET['ip'])) {
-                list($m, $e) = $this->addIPBlock($dt, $_GET['ip'], $desc);
-                $_SESSION['sz2-m'] = $m;
-                $_SESSION['sz2-e'] = $e;
-            //} else {
-            //    unset($_SESSION['sz2-m']);
-            //    $_SESSION['sz2-e'] = ["IP address invalid."];
-            //}
+            $istmp = false;
+            if (isset($_GET['temp'])) {
+                $istmp = true;
+            }
+            list($m, $e) = $this->addIPBlock($dt, $_GET['ip'], $desc, $istmp);
+            $_SESSION['sz2-m'] = $m;
+            $_SESSION['sz2-e'] = $e;
             echo("<script>location.href = '" . $back . "'</script>");
            return;
         } else if (isset($_GET['domain'])) {
@@ -226,6 +241,9 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                 $ipBlock = $_POST['ip-block'];
                 $ipBlockDesc = $_POST['ip-block-desc'];
 
+                $ipTempBlock = $_POST['ip-temp-block'];
+                $ipTempBlockDesc = $_POST['ip-temp-block-desc'];
+
                 $ipAllow = $_POST['ip-allow'];
                 $ipAllowDesc = $_POST['ip-allow-desc'];
 
@@ -240,8 +258,8 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                 $stringBlock = $_POST['string-block'];
                 $isstringregex = $_POST['isstringregex'];
                 $stringBlockDesc = $_POST['string-block-desc'];
-                $applytouser = $_POST['applyto_user'];
-                $applytocomment = $_POST['applyto_comment'];
+                $applytouser = isset($_POST['applyto_user']) ?? 0;
+                $applytocomment = isset($_POST['applyto_comment']) ?? 0;
 
                 if (empty($domainBlock) and empty($ipBlock) and empty($emailBlock) and empty($stringBlock) and empty($ipAllow)) {
                     $form->addError("You must select something to do.");
@@ -273,6 +291,13 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                     // IP block.
                     if (!empty($ipBlock)) {
                         list($m, $e) = $this->addIPBlock($dt, $ipBlock, $ipBlockDesc);
+                        if (!is_null($m)) $msgs[] = $m;
+                        if (!is_null($e)) $errors[] = $e;
+                    }
+
+                    // IP temp block.
+                    if (!empty($ipTempBlock)) {
+                        list($m, $e) = $this->addIPBlock($dt, $ipTempBlock, $ipTempBlockDesc, true);
                         if (!is_null($m)) $msgs[] = $m;
                         if (!is_null($e)) $errors[] = $e;
                     }
@@ -422,10 +447,11 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
      * @param   string          $dt             Date/Time.
      * @param   string          $ipBlock        IP to block.
      * @param   string          $desc           Description.
+     * @param   bool            $temp           Temp block?
      * 
      * @return  array                       (msg, error)
      */
-    protected function addIPBlock(string $dt, string $ipBlock, string $desc = ''): array
+    protected function addIPBlock(string $dt, string $ipBlock, string $desc = '', bool $temp = false): array
     {
         $msg = [];
         $error = [];
@@ -441,7 +467,14 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
 
             $item = trim($item);
 
-            $ipbm = $this->parent->getApp()->get('ipblockmodel');
+            $ipbm = null;
+            $blockMsg = 'IP Block';
+            if ($temp) {
+                $ipbm = $this->parent->getApp()->get('iptempblockmodel');
+                $blockMsg = 'IP Temp Block';
+            } else {
+                $ipbm = $this->parent->getApp()->get('ipblockmodel');
+            }
             $iscovered = $ipbm->isCovered($item);
             $isoverriding = $ipbm->isOverriding($item);
 
@@ -453,12 +486,16 @@ class AddRulePageProcessor extends AbstractPageProcessor implements PageProcesso
                 $rec = [
                     'type' => TypeCodes::TYPE_INFO,
                     'matchtype' => TypeCodes::MT_NEW_RULE, 
-                    'matchval' => 'IP Block: ' . $item,
+                    'matchval' => $blockMsg . ': ' . $item,
                     'dt' => $dt,
                     'status' => TypeCodes::STATUS_INFO,
                 ];
                 $lm->create($rec);
-                $msg[] = sprintf("Added IP block for '%s'.", $item); 
+                if ($temp) {
+                    $msg[] = sprintf("Added IP temp block for '%s'.", $item); 
+                } else {
+                    $msg[] = sprintf("Added IP block for '%s'.", $item); 
+                }
                 if (!is_null($isoverriding)) {
                     $or = [];
                     foreach ($isoverriding as $single) {

@@ -60,10 +60,11 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
             'name' => 'manage-rules-sel',
             'options'   =>  [
                 '1' => "IP Blocks",
-                '2' => "Domain Blocks",
-                '3' => "Email Blocks",
-                '4' => "String Blocks",
-                '5' => "IP Allows",
+                '2' => "IP Temporary Blocks",
+                '3' => "Domain Blocks",
+                '4' => "Email Blocks",
+                '5' => "String Blocks",
+                '6' => "IP Allows",
             ],
             'label' => 'Rule Set',
             'class' => 'nowrap',
@@ -265,6 +266,10 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
                     $model = $this->parent->getApp()->get('ipblockmodel');
                     break;
 
+                case 'iptempblock_id':
+                    $model = $this->parent->getApp()->get('iptempblockmodel');
+                    break;
+
                 case 'ipallow_id':
                     $model = $this->parent->getApp()->get('ipallowmodel');
                     break;
@@ -322,27 +327,35 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
                 $model = $this->parent->getApp()->get('ipblockmodel');
                 break;
             case 2:
-                $model = $this->parent->getApp()->get('domainblockmodel');
+                $model = $this->parent->getApp()->get('iptempblockmodel');
                 break;
             case 3:
-                $model = $this->parent->getApp()->get('emailblockmodel');
+                $model = $this->parent->getApp()->get('domainblockmodel');
                 break;
             case 4:
-                $model = $this->parent->getApp()->get('stringblockmodel');
+                $model = $this->parent->getApp()->get('emailblockmodel');
                 break;
             case 5:
+                $model = $this->parent->getApp()->get('stringblockmodel');
+                break;
+            case 6:
                 $model = $this->parent->getApp()->get('ipallowmodel');
                 break;
         } 
 
         $table = null;
-        if (1 == $ruleset or 5 == $ruleset) {
+        if (1 == $ruleset or 2 == $ruleset or 6 == $ruleset) {
             $recs = $model->listAll('range_start_long');
             if (count($recs) > 0) {
-                $f = (5 == $ruleset) ? 'ipallow_id' : 'ipblock_id';
+                $f = 'ipblock_id';
+                if (2 == $ruleset) {
+                    $f = 'iptempblock_id';
+                } else if (6 == $ruleset) {
+                    $f = 'ipallow_id';
+                }
                 $table = $this->createTable1($recs, $f);
             }
-        } else if (4 == $ruleset) {
+        } else if (5 == $ruleset) {
             $recs = $model->listAll('item');
             if (count($recs) > 0) {
                 $table = $this->createTable3($recs);

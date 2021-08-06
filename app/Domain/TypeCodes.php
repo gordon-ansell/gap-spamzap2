@@ -76,6 +76,7 @@ class TypeCodes
     const MT_LOGIN_ERROR        =   15;
     const MT_LOGIN_AUTH         =   16;
     const MT_COMMENT_ERROR      =   17;
+    const MT_IP_TEMP_BLOCK      =   18;
 
     // MATCH type strings.
     const TYPESTRS_MT = [
@@ -96,5 +97,7 @@ class TypeCodes
         self::MT_LOGIN_ERROR        => "Login Error",
         self::MT_LOGIN_AUTH         => "Auth Process", 
         self::MT_COMMENT_ERROR      => "Comment Error",
+        self::MT_IP_TEMP_BLOCK      => "IP (Temp) Blocked",
     ];
+
 }

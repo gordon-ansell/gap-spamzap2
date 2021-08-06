@@ -163,7 +163,10 @@ class LogModel extends AbstractDbModel
         $slugUrl = Path::join(\plugin_dir_url($slug), $slug);
         $iconUrl = Path::join($slugUrl, 'assets', 'icons');
         $banUrl = \admin_url('admin.php') . '?page=spamzap2-add-rule';
+        $tempBanUrl = \admin_url('admin.php') . '?page=spamzap2-add-rule&temp=true';
         $delUserUrl = \admin_url('users.php') . '?s=';
+
+        $settings = $this->dbAccess->getSettings();
 
         // Icons.
         $plusIcon = new Html('img', [
@@ -258,6 +261,19 @@ class LogModel extends AbstractDbModel
         ]);
         $ipBanIconR = $ipBanIcon->render();
 
+        // IP temp bans.
+        $ipTempBanLink = new Html('a', [
+            'href' => $tempBanUrl,
+            'title' => 'Temporarily ban this IP address.',
+        ]);
+        $ipTempBanIcon = new Html('img', [
+            'title' => 'Temporarily ban this IP address.', 
+            'alt' => "Generic block icon, indicating IP address to be banned.", 
+            'class' => 'icon banip',
+            'src' => Path::join($iconUrl, 'temp-block.png'),
+        ]);
+        $ipTempBanIconR = $ipTempBanIcon->render();
+
         // IP CIDR bans.
         $cidrBanIcon = new Html('img', [
             'title' => 'Ban this IP CIDR range.', 
@@ -266,6 +282,15 @@ class LogModel extends AbstractDbModel
             'src' => Path::join($iconUrl, 'block.png'),
         ]);
         $cidrBanIconR = $cidrBanIcon->render();
+
+        // IP CIDR temp bans.
+        $cidrTempBanIcon = new Html('img', [
+            'title' => 'Temporarily ban this IP CIDR range.', 
+            'alt' => "Generic block icon, indicating IP CIDR range to be banned.", 
+            'class' => 'icon bancidr',
+            'src' => Path::join($iconUrl, 'temp-block.png'),
+        ]);
+        $cidrTempBanIconR = $cidrTempBanIcon->render();
 
         // Domain ban.
         $domainBanLink = new Html('a', [
@@ -352,13 +377,15 @@ class LogModel extends AbstractDbModel
             // IP icons.
             if ('' != $record['ip2'] and 'n/a' != $record['ip2']) {
                 $ipBanLink->setParam('href', $banUrl . '&ip=' . $record['ip2']);
-                $record['ip2'] = $ipBanLink->render($ipBanIconR) . $record['ip']; 
+                $ipTempBanLink->setParam('href', $tempBanUrl . '&ip=' . $record['ip2']);
+                $record['ip2'] = $ipBanLink->render($ipBanIconR) . ' ' . $ipTempBanLink->render($ipTempBanIconR) . $record['ip']; 
             }
 
             // CIDR icons.
             if ('' != $record['cidrs'] and 'n/a' != $record['cidrs']) {
                 $ipBanLink->setParam('href', $banUrl . '&ip=' . $record['cidrs']);
-                $record['cidrs'] = $ipBanLink->render($cidrBanIconR) . $record['cidrs']; 
+                $ipTempBanLink->setParam('href', $tempBanUrl . '&ip=' . $record['cidrs']);
+                $record['cidrs'] = $ipBanLink->render($cidrBanIconR) . ' ' . $ipTempBanLink->render($cidrTempBanIconR) . $record['cidrs']; 
             }
 
             // Domain block (email).
@@ -411,7 +438,15 @@ class LogModel extends AbstractDbModel
                 }
             }
 
+            // Passwords.
+            if (!empty($record['pwd']) and '1' == $settings['collect-password'] and !empty($settings['secret1']) and !empty($settings['secret2'])) {
+                $record['pwd'] = $this->cryptic($record['pwd'], $settings['secret1'], $settings['secret2'], true);
+            } else {
+                $record['pwd'] = 'n/a';
+            }
+
             // Info (passwords maybe).
+            /*
             $info = $record['info'];
             if (!is_null($info) and '' != $info) {
                 $settings = $this->dbAccess->getSettings();
@@ -424,6 +459,7 @@ class LogModel extends AbstractDbModel
             } else {
                 $record['info'] = '';
             }
+            */
 
             // Matchtype class.
             /*
@@ -449,10 +485,17 @@ class LogModel extends AbstractDbModel
     public function create(array $data)
     {
         $latest = $this->getLatestRecord();
+        $unc = isset($data['username']) ?? '';
+        $unl = isset($latest['username']) ?? '';
+        $ipc = isset($data['ip']) ?? '';
+        $ipl = isset($latest['ip']) ?? '';
+        $passc = isset($data['pass']) ?? '';
+        $passl = isset($latest['pass']) ?? '';
         if (!is_null($latest) and TypeCodes::TYPE_COMMENT != $data['type'] and
             (
-                $data['ip'] == $latest['ip'] and
-                $data['username'] == $latest['username'] and
+                $ipc == $ipl and
+                $unc == $unl and
+                $passc == $passl and
                 intval($data['type']) == intval($latest['type']) and
                 intval($data['status']) == intval($latest['status']) and
                 intval($data['matchtype']) == intval($latest['matchtype']) and
@@ -589,6 +632,7 @@ class LogModel extends AbstractDbModel
                 'email2'            =>  is_null($record['email']) ? '' : $record['email'],
                 'emaildomain'       =>  $emaildomain,
                 'rawemaildomain'    =>  $rawemaildomain,
+                'pwd'               =>  is_null($record['pwd']) ? '' : $record['pwd'],
                 'info'              =>  is_null($record['info']) ? '' : $record['info'],
                 //'blank1'            =>  ' ',
 

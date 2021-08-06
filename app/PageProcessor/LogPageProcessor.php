@@ -56,7 +56,7 @@ class LogPageProcessor extends AbstractPageProcessor implements PageProcessorInt
             ->addColumn('Email', 'email2')
             ->addColumn('Email Domain')
             ->addColumn('Raw Email Domain')
-            ->addColumn('Info')
+            ->addColumn('Password', 'pwd')
             ->addColumn('Author URL', 'commentauthorurl')
             ->addColumn('Author Domain', 'commentauthordom')
             ->addColumn('Post Title', 'commentposttitle')

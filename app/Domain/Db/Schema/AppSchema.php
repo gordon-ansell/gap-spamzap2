@@ -26,6 +26,7 @@ class AppSchema extends Schema
      */
     protected $tableSpec = array(
         IPBlockTable::class => 'ipblock',
+        IPTempBlockTable::class => 'iptempblock',
         IPAllowTable::class => 'ipallow',
         IPLookupTable::class => 'iplookup',
         DomainBlockTable::class => 'domainblock',

@@ -52,7 +52,9 @@ class UserMode extends PluginUser implements PluginUserInterface
 
         // Add a check to run when a comment is posted.
         if ('1' == $this->settings['check-comments']) {
-            \add_filter('pre_comment_approved', array($this, 'preprocessCommentFilter'), 
+            \add_filter('preprocess_comment', array($this, 'preprocessCommentFilter1'), 
+                $this->app->getConfig('plugin.priority'), 1);
+            \add_filter('pre_comment_approved', array($this, 'preprocessCommentFilter2'), 
                 $this->app->getConfig('plugin.priority'), 2);
         }
 
@@ -84,66 +86,6 @@ class UserMode extends PluginUser implements PluginUserInterface
 
     }
 
-        /**
-     * Called when a comment is posted.
-     * 
-     * @param   array   $commentdata    Comment data.
-     * 
-     * @return  mixed                   Possibly updates comment data.
-     */
-    public function preprocessCommentFilter($approved, array $commentdata)
-    {
-        if (\is_wp_error($approved)) {
-            $data = $this->checker->createCheckBlock(TypeCodes::TYPE_COMMENT);
-            $data['matchtype'] = TypeCodes::MT_COMMENT_ERROR;
-            $data['matchval'] = strip_tags($approved->get_error_message(), '<strong>');
-            $data['dt'] = $this->getDt();
-            $data['status'] = TypeCodes::STATUS_ERROR;
-            $data['username'] = $commentdata['comment_author'];
-            $data['userid'] = $commentdata['user_id'];
-            $lm = $this->getApp()->get('logmodel');
-            $lm->create($data);    
-            return $approved;
-        }
-
-        $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_COMMENT);
-
-        $checkBlock['username']             = $commentdata['comment_author'];
-        $checkBlock['email']                = $commentdata['comment_author_email'];
-        $checkBlock['commentauthorurl']     = $commentdata['comment_author_url'];
-        $checkBlock['comment']              = $commentdata['comment_content'];
-        $checkBlock['userid']               = $commentdata['user_id'];
-        $checkBlock['commentpostid']        = $commentdata['comment_post_ID'];
-
-        $cpid = $commentdata['comment_post_ID'];
-        if (!empty($cpid) and !is_null($cpid) and 0 != $cpid) {
-            $checkBlock['commentposttitle'] = \get_the_title($cpid);
-        }
-
-        list($status, $info) = $this->checker->doCheck($checkBlock);
-
-        if ("1" == $this->settings['dummy-mode']) {
-            return $commentdata;
-        }
-
-        if (false === $status) {
-            echo '<pre class="spam">';
-            echo "SSSSSSSS   PPPPPPPP      A       M       M" . '<br />' . PHP_EOL;
-            echo "S          P      P    A   A     MM     MM" . '<br />' . PHP_EOL;
-            echo "SSSSSSSS   PPPPPPPP   AAAAAAA    M M   M M" . '<br />' . PHP_EOL;
-            echo "       S   P         A       A   M   M   M" . '<br />' . PHP_EOL;
-            echo "SSSSSSSS   P        A         A  M       M" . '<br />' . PHP_EOL;
-            echo "</pre>";
-
-            echo '<div><a href="https://en.wikipedia.org/wiki/Forum_spam">More details.</a></div>';
-            sleep(3);
-
-            wp_die(__('Suspected spam. The comment has not been posted.'));
-        }
-
-        return $approved;
-    }
-
     /**
      * Called when a comment is posted.
      * 
@@ -151,8 +93,7 @@ class UserMode extends PluginUser implements PluginUserInterface
      * 
      * @return  array                   Possibly updates comment data.
      */
-    /*
-    public function preprocessCommentFilter(array $commentdata): array
+    public function preprocessCommentFilter1(array $commentdata): array
     {
         $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_COMMENT);
 
@@ -191,7 +132,32 @@ class UserMode extends PluginUser implements PluginUserInterface
 
         return $commentdata;
     }
-    */
+
+    /**
+     * Called when a comment is posted.
+     * 
+     * @param   array   $commentdata    Comment data.
+     * 
+     * @return  mixed                   Possibly updates comment data.
+     */
+    public function preprocessCommentFilter2($approved, array $commentdata)
+    {
+        if (\is_wp_error($approved)) {
+            $data = $this->checker->createCheckBlock(TypeCodes::TYPE_COMMENT);
+            $data['matchtype'] = TypeCodes::MT_COMMENT_ERROR;
+            $data['matchval'] = strip_tags($approved->get_error_message(), '<strong>');
+            $data['dt'] = $this->getDt();
+            $data['status'] = TypeCodes::STATUS_ERROR;
+            $data['username'] = $commentdata['comment_author'];
+            $data['userid'] = $commentdata['user_id'];
+            $lm = $this->getApp()->get('logmodel');
+            $lm->create($data);    
+            return $approved;
+        }
+
+        return $approved;
+    }
+
 
     /**
      * Called after a new user tries to register.
@@ -319,9 +285,13 @@ class UserMode extends PluginUser implements PluginUserInterface
         if (!isset($_GET['loggedout'])) {
             $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
             $checkBlock['username'] = $username;
+            $lm = $this->getApp()->get('logmodel');
+            if ('1' == $this->settings['collect-password'] and !empty($this->settings['secret1']) and !empty($this->settings['secret2'])) {
+                $checkBlock['pwd'] = $lm->cryptic($password, $this->settings['secret1'], $this->settings['secret2']);
+            }
             list($status, $info) = $this->checker->doCheck($checkBlock);
             if (false === $status) {
-                return new \WP_Error('authorization_failed', 'Suspected trouble maker - go away');
+                //return new \WP_Error('authorization_failed', 'Suspected trouble maker - go away');
                 \wp_die('Suspected trouble maker - go away');
             } 
         }

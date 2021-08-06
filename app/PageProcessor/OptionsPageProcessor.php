@@ -110,7 +110,7 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
 
             $form->addField('radioset', ['name' => 'ignore-if-logged-in', 'label' => 'Ignore Logged In Users?', 'class' => 'radio', 
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
-                'title' => "SpamXap2 will not check logged in users is this is set to yes."]);
+                'title' => "SpamZap2 will not check logged in users is this is set to yes."]);
 
             $form->addField('inputtext', ['name' => 'comment-chars', 'label' => 'Comment Characters', 
                 'title' => "Enter the number of comment characters to store in the logs.", 'style' => 'width: 10em'])
@@ -125,6 +125,21 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
         // Row four.
         $form->addField('divopen', ['name' => 'row4', 'class' => 'three-columns']);
 
+            $form->addField('radioset', ['name' => 'collect-password', 'label' => 'Collect Passwords?', 'class' => 'radio', 
+                'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
+                'title' => "Collect passwords for login failures?"]);
+
+            $form->addField('inputtext', ['name' => 'secret1', 'label' => 'Secret 1', 
+                'title' => "Used to encrypt passwords in the database.", 'style' => 'width: 10em']);
+
+            $form->addField('inputtext', ['name' => 'secret2', 'label' => 'Secret 2', 
+                'title' => "Used to encrypt passwords in the database.", 'style' => 'width: 10em']);
+
+        $form->addField('divclose', ['name' => 'row4close']);
+
+        // Row five.
+        $form->addField('divopen', ['name' => 'row5', 'class' => 'three-columns']);
+
             $form->addField('radioset', ['name' => 'block-all', 'label' => 'Block All?', 'class' => 'radio', 
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "Block all except logged in administrators. Useful in a bad attack."]);
@@ -137,7 +152,16 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "Run in debug mode? Writes debugging messages to the tech log."]);
 
-        $form->addField('divclose', ['name' => 'row4close']);
+        $form->addField('divclose', ['name' => 'row5close']);
+
+        // Row six.
+        $form->addField('divopen', ['name' => 'row6', 'class' => 'three-columns']);
+
+            $form->addField('inputtext', ['name' => 'temp-block-days', 'label' => 'Temp Block Days', 
+                'title' => "Days you wany temporary IP blocks to run for.", 'style' => 'width: 10em'])
+                ->addValidator(new NumericBetweenValidator(['Temp block days'], ['high' => 1000, 'low' => 1]));
+
+        $form->addField('divclose', ['name' => 'row6close']);
 
         // End stuff.
         $form->addField('buttonsubmit', ['name' => 'submit', 'value' => 'Submit', 'style' => 'width: 10em']);

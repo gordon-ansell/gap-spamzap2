@@ -30,6 +30,7 @@ class LogTable extends Table
             ->addColumnText('username')
             ->addColumnInt('userid', 0, ['null' => true])
             ->addColumnText('email')
+            ->addColumnText('pwd', '', ['null' => true])
             ->addColumnText('ip')
             ->addColumnInt('type')
             ->addColumnInt('status')
