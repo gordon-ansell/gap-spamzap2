@@ -197,7 +197,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
     public function checkInfo(bool $false, $action, $response)
     {
         // If nothing is found, do nothing
-        if (empty($response->slug) || $response->slug != $this->pluginBasename ) {
+        if (empty($response->slug) || $response->slug != $this->pluginSlug ) {
             return false;
         }
 
