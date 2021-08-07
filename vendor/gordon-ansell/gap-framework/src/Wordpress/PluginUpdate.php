@@ -39,6 +39,12 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
     protected $pluginSlug;
 
     /**
+     * Plugin basename.
+     * @var string
+     */
+    protected $pluginBasename;
+
+    /**
      * Access token.
      * @var string
      */
@@ -89,8 +95,9 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
      */
     protected function initPluginData()
     {
-        $this->pluginSlug = \plugin_basename($this->app->get('pluginFile'));
+        $this->pluginBasename = \plugin_basename($this->app->get('pluginFile'));
         $this->pluginData = \get_plugin_data($this->app->get('pluginFile'));
+        $this->pluginSlug = current(explode('/', $this->pluginBasename));
     }
 
     /**
@@ -153,7 +160,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
         $this->loadRepoReleaseInfo();
 
         // Compare the versions.
-        $doUpdate = version_compare($this->githubAPIResult->tag_name, $transient->checked[$this->pluginSlug]);
+        $doUpdate = version_compare($this->githubAPIResult->tag_name, $transient->checked[$this->pluginBasename]);
 
 
         // Update the transient to include our updated plugin data
@@ -173,7 +180,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
             $obj->url = $this->pluginData["PluginURI"];
             $obj->package = $package;
             //$obj->args = $args;
-            $transient->response[$this->pluginSlug] = $obj;
+            $transient->response[$this->pluginBasename] = $obj;
         }
 
         return $transient;
@@ -190,7 +197,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
     public function checkInfo(bool $false, $action, $response)
     {
         // If nothing is found, do nothing
-        if (empty($response->slug) || $response->slug != $this->pluginSlug ) {
+        if (empty($response->slug) || $response->slug != $this->pluginBasename ) {
             return false;
         }
 
@@ -201,16 +208,17 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
         $this->loadRepoReleaseInfo();
 
         // Split the slug.
-        $sp = explode('/', $this->pluginSlug);
+        $sp = explode('/', $this->pluginBasename);
 
         // Add our plugin information.
         $response->last_updated = $this->githubAPIResult->published_at;
-        $response->slug = $this->pluginSlug;
+        $response->slug = $this->pluginBasename;
         $response->name  = $this->pluginData["Name"];
-        $response->plugin_name  = $this->pluginData["Name"];
+        //$response->plugin_name  = $this->pluginData["Name"];
         $response->version = $this->githubAPIResult->tag_name;
         $response->author = $this->pluginData["AuthorName"];
         $response->homepage = $this->pluginData["PluginURI"];
+        $response->short_description = $this->pluginData['Description']; 
         $response->sections = [
             'description' => $this->pluginData['Description'],
             'changelog' => $this->githubApiResult->body,
@@ -266,18 +274,18 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
         $this->initPluginData();
 
         // Remember if our plugin was previously activated
-        $wasActivated = \is_plugin_active($this->pluginSlug);
+        $wasActivated = \is_plugin_active($this->pluginBasename);
 
         // Since we are hosted in GitHub, our plugin folder would have a dirname of
         // reponame-tagname change it to our original one:
         global $wp_filesystem;
-        $pluginFolder = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . dirname($this->pluginSlug);
+        $pluginFolder = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . dirname($this->pluginBasename);
         $wp_filesystem->move($result['destination'], $pluginFolder);
         $result['destination'] = $pluginFolder;     
         
         // Reactivate.
         if ( $wasActivated ) {
-            $activate = activate_plugin($this->pluginSlug);
+            $activate = activate_plugin($this->pluginBasename);
         }
                 
         return $result;
