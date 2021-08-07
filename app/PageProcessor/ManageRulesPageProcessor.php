@@ -13,16 +13,14 @@ namespace App\PageProcessor;
 
 use GreenFedora\Wordpress\PageProcessor\AbstractPageProcessor;
 use GreenFedora\Wordpress\PageProcessor\PageProcessorInterface;
-use GreenFedora\Validator\IPAddressPossibleCIDRValidator;
 use GreenFedora\Form\Form;
 use GreenFedora\Form\FormInterface;
 use GreenFedora\Stdlib\Arr\Arr;
-use App\Domain\TypeCodes;
-use GreenFedora\IP\IPAddress;
 use GreenFedora\Stdlib\Path;
 use GreenFedora\Html\TableMaker\TableMaker;
 use GreenFedora\Html\TableMaker\TableMakerInterface;
 use GreenFedora\Html\Html;
+use App\Domain\TypeCodes;
 
 
 /**
@@ -262,36 +260,56 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
             $mrUrl = \admin_url('admin.php') . '?page=spamzap2-manage-rules';
 
             $model = null;
+            $delmsg = null;
             switch ($_GET['field']) {
                 case 'ipblock_id':
                     $model = $this->parent->getApp()->get('ipblockmodel');
+                    $delmsg = "IP Block";
                     break;
 
                 case 'iptempblock_id':
                     $model = $this->parent->getApp()->get('iptempblockmodel');
+                    $delmsg = "IP Temp Block";
                     break;
 
                 case 'ipallow_id':
                     $model = $this->parent->getApp()->get('ipallowmodel');
+                    $delmsg = "IP Allow";
                     break;
 
                 case 'domainblock_id':
                     $model = $this->parent->getApp()->get('domainblockmodel');
+                    $delmsg = "Domain Block";
                     break;
 
                 case 'emailblock_id':
                     $model = $this->parent->getApp()->get('emailblockmodel');
+                    $delmsg = "Email Block";
                     break;
 
                 case 'stringblock_id':
                     $model = $this->parent->getApp()->get('stringblockmodel');
+                    $delmsg = "String Block";
                     break;
 
             }
 
             if (!is_null($model)) {
+                $data = $model->fetch($_GET['id'])[0];
+                $thing = isset($data['ip']) ? $data['ip'] : $data['item'];
                 $model->delete(intval($_GET['id']));
                 $_SESSION['sz2-m'] = "Record deleted.";
+
+                $lm = $this->parent->getApp()->get('logmodel');
+                $rec = [
+                    'type' => TypeCodes::TYPE_INFO,
+                    'matchtype' => TypeCodes::MT_DEL_RULE, 
+                    'matchval' => $delmsg . ': ' . stripslashes($thing),
+                    'dt' => $this->getDt(),
+                    'status' => TypeCodes::STATUS_INFO,
+                ];
+                $lm->create($rec);    
+
                 echo("<script>location.href = '" . $mrUrl . "'</script>");
                 return;
             }
@@ -329,6 +347,7 @@ class ManageRulesPageProcessor extends AbstractPageProcessor implements PageProc
                 break;
             case 2:
                 $model = $this->parent->getApp()->get('iptempblockmodel');
+                $model->expireEntries();
                 break;
             case 3:
                 $model = $this->parent->getApp()->get('domainblockmodel');

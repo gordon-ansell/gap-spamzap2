@@ -77,6 +77,8 @@ class TypeCodes
     const MT_LOGIN_AUTH         =   16;
     const MT_COMMENT_ERROR      =   17;
     const MT_IP_TEMP_BLOCK      =   18;
+    const MT_DEL_RULE           =   19;
+    const MT_EXPIRE_RULE        =   20;
 
     // MATCH type strings.
     const TYPESTRS_MT = [
@@ -98,6 +100,8 @@ class TypeCodes
         self::MT_LOGIN_AUTH         => "Auth Process", 
         self::MT_COMMENT_ERROR      => "Comment Error",
         self::MT_IP_TEMP_BLOCK      => "IP (Temp) Blocked",
+        self::MT_DEL_RULE           => "Delete Rule",
+        self::MT_EXPIRE_RULE        => "Expire Rule",
     ];
 
 }
