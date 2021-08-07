@@ -149,26 +149,18 @@ class LogModel extends AbstractDbModel
    }
 
    /**
-     * Process the records for display.
-     * 
-     * @param   array           $records        Log records to process.
-     * @param   int             $logNew         Number of new log records.
-     * @param   string          $slug           Slug.
-     * @return  array
-     */
-    public function processRecordsForDisplay(array $records, int $logNew, string $slug)
+    * Create all the icons.
+    * 
+    * @param    string  $slug   Slug.
+    * 
+    * @return   array
+    */
+    protected function createIcons(string $slug): array
     {
-        $data = [];
-
         $slugUrl = Path::join(\plugin_dir_url($slug), $slug);
         $iconUrl = Path::join($slugUrl, 'assets', 'icons');
-        $banUrl = \admin_url('admin.php') . '?page=spamzap2-add-rule';
-        $tempBanUrl = \admin_url('admin.php') . '?page=spamzap2-add-rule&temp=true';
-        $delUserUrl = \admin_url('users.php') . '?s=';
 
-        $settings = $this->dbAccess->getSettings();
-
-        // Icons.
+        // +/- icons.
         $plusIcon = new Html('img', [
             'title' => 'Expand.', 
             'alt' => "Plus icon.", 
@@ -188,6 +180,8 @@ class LogModel extends AbstractDbModel
         ]);
         $blankIconR = $blankIcon->render();
 
+
+        // Type icons.
         $infoIcon = new Html('img', [
             'title' => 'Info record. Adding rules etc.', 
             'alt' => "Info icon.", 
@@ -239,20 +233,8 @@ class LogModel extends AbstractDbModel
             'src' => Path::join($iconUrl, 'del-user.png'),
         ]);
         $delUserIconR = $delUserIcon->render();
-        $delUserLink = new Html('a', [
-            'href' => $delUserUrl,
-            'target' => '_blank',
-            'title' => 'Delete this user.',
-        ]);
 
-        // Matchtype class.
-        //$matchTypeSpan = new Html('span', ['class' => 'matchtype']);
-
-        // IP bans.
-        $ipBanLink = new Html('a', [
-            'href' => $banUrl,
-            'title' => 'Ban this IP address.',
-        ]);
+        // IP ban.
         $ipBanIcon = new Html('img', [
             'title' => 'Ban this IP address.', 
             'alt' => "Generic block icon, indicating IP address to be banned.", 
@@ -261,11 +243,7 @@ class LogModel extends AbstractDbModel
         ]);
         $ipBanIconR = $ipBanIcon->render();
 
-        // IP temp bans.
-        $ipTempBanLink = new Html('a', [
-            'href' => $tempBanUrl,
-            'title' => 'Temporarily ban this IP address.',
-        ]);
+        // Temp ban icon.
         $ipTempBanIcon = new Html('img', [
             'title' => 'Temporarily ban this IP address.', 
             'alt' => "Generic block icon, indicating IP address to be banned.", 
@@ -292,11 +270,7 @@ class LogModel extends AbstractDbModel
         ]);
         $cidrTempBanIconR = $cidrTempBanIcon->render();
 
-        // Domain ban.
-        $domainBanLink = new Html('a', [
-            'href' => $banUrl,
-            'title' => 'Ban this domain.',
-        ]);
+        // Domain.
         $domainBanIcon = new Html('img', [
             'title' => 'Ban this domain.', 
             'alt' => "Generic block icon, indicating domain to be banned.", 
@@ -305,11 +279,7 @@ class LogModel extends AbstractDbModel
         ]);
         $domainBanIconR = $domainBanIcon->render();
 
-        // Email ban.
-        $emailBanLink = new Html('a', [
-            'href' => $banUrl,
-            'title' => 'Ban this email address.',
-        ]);
+        // Email.
         $emailBanIcon = new Html('img', [
             'title' => 'Ban this email address.', 
             'alt' => "Generic block icon, indicating email address to be banned.", 
@@ -317,6 +287,100 @@ class LogModel extends AbstractDbModel
             'src' => Path::join($iconUrl, 'block.png'),
         ]);
         $emailBanIconR = $emailBanIcon->render();
+
+
+        return array(
+            $plusIcon, 
+            $minusIcon,
+            $blankIconR,
+            $infoIconR,
+            $contactIconR,
+            $commentIconR,
+            $regIconR,
+            $passIconR,
+            $lgnIconR,
+            $delUserIconR,
+            $ipBanIconR,
+            $ipTempBanIconR,
+            $cidrBanIconR,
+            $cidrTempBanIconR,
+            $domainBanIconR,
+            $emailBanIconR,
+        );
+
+    }
+
+   /**
+     * Process the records for display.
+     * 
+     * @param   array           $records        Log records to process.
+     * @param   int             $logNew         Number of new log records.
+     * @param   string          $slug           Slug.
+     * @return  array
+     */
+    public function processRecordsForDisplay(array $records, int $logNew, string $slug)
+    {
+        $data = [];
+
+        //$slugUrl = Path::join(\plugin_dir_url($slug), $slug);
+        //$iconUrl = Path::join($slugUrl, 'assets', 'icons');
+        $banUrl = \admin_url('admin.php') . '?page=spamzap2-add-rule';
+        $tempBanUrl = \admin_url('admin.php') . '?page=spamzap2-add-rule&temp=true';
+        $delUserUrl = \admin_url('users.php') . '?s=';
+
+        $settings = $this->dbAccess->getSettings();
+
+        list(
+            $plusIcon, 
+            $minusIcon,
+            $blankIconR,
+            $infoIconR,
+            $contactIconR,
+            $commentIconR,
+            $regIconR,
+            $passIconR,
+            $lgnIconR,
+            $delUserIconR,
+            $ipBanIconR,
+            $ipTempBanIconR,
+            $cidrBanIconR,
+            $cidrTempBanIconR,
+            $domainBanIconR,
+            $emailBanIconR,
+        ) = $this->createIcons($slug);
+
+        $delUserLink = new Html('a', [
+            'href' => $delUserUrl,
+            'target' => '_blank',
+            'title' => 'Delete this user.',
+        ]);
+
+        // Matchtype class.
+        //$matchTypeSpan = new Html('span', ['class' => 'matchtype']);
+
+        // IP bans.
+        $ipBanLink = new Html('a', [
+            'href' => $banUrl,
+            'title' => 'Ban this IP address.',
+        ]);
+
+        // IP temp bans.
+        $ipTempBanLink = new Html('a', [
+            'href' => $tempBanUrl,
+            'title' => 'Temporarily ban this IP address.',
+        ]);
+
+        // Domain ban.
+        $domainBanLink = new Html('a', [
+            'href' => $banUrl,
+            'title' => 'Ban this domain.',
+        ]);
+
+        // Email ban.
+        $emailBanLink = new Html('a', [
+            'href' => $banUrl,
+            'title' => 'Ban this email address.',
+        ]);
 
         $count = 1;
         foreach ($records as $record) {
