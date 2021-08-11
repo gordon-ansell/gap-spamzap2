@@ -558,18 +558,21 @@ class LogModel extends AbstractDbModel
         $ipl = isset($latest['ip']) ?? '';
         $passc = isset($data['pass']) ?? '';
         $passl = isset($latest['pass']) ?? '';
+        $emc = isset($data['email']) ?? '';
+        $eml = isset($latest['email']) ?? '';
         if (!is_null($latest) and TypeCodes::TYPE_COMMENT != $data['type'] and
             (
                 $ipc == $ipl and
                 $unc == $unl and
                 $passc == $passl and
+                $emc == $eml and
                 intval($data['type']) == intval($latest['type']) and
                 intval($data['status']) == intval($latest['status']) and
                 intval($data['matchtype']) == intval($latest['matchtype']) and
                 $data['matchval'] == $latest['matchval']
              )) {
 
-            $this->incrementCount(intval($latest[$this->tableName . '_id']));
+            $this->incrementCount(intval($latest[$this->tableName . '_id']), $data['dt']);
         } else {
             return parent::create($data);
         }
@@ -579,9 +582,10 @@ class LogModel extends AbstractDbModel
      * Increment the count for a log record.
      * 
      * @param   int     $id     ID.
+     * @param   string  $dt     Date/time.
      * @return  void
      */
-    public function incrementCount(int $id)
+    public function incrementCount(int $id, string $dt)
     {
         $curr = $this->getDb()->select($this->tableName)
             ->where($this->tableName . '_id', $id)
@@ -589,7 +593,7 @@ class LogModel extends AbstractDbModel
 
         $new = $curr + 1;
 
-        $this->update($id, ['dupcount' => $new]);
+        $this->update($id, ['dupcount' => $new, 'dt' => $dt]);
     }
 
     /**
