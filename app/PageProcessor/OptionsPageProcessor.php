@@ -161,6 +161,10 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'title' => "Days you wany temporary IP blocks to run for.", 'style' => 'width: 10em'])
                 ->addValidator(new NumericBetweenValidator(['Temp block days'], ['high' => 1000, 'low' => 1]));
 
+            $form->addField('radioset', ['name' => 'roll-up-duplicates', 'label' => 'Roll Up Duplicates?', 'class' => 'radio', 
+                'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
+                'title' => "Roll up duplicate log entries with a count."]);
+
         $form->addField('divclose', ['name' => 'row6close']);
 
         // End stuff.

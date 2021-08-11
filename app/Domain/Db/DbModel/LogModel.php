@@ -551,28 +551,40 @@ class LogModel extends AbstractDbModel
      */
     public function create(array $data)
     {
-        $latest = $this->getLatestRecord();
-        $unc = isset($data['username']) ?? '';
-        $unl = isset($latest['username']) ?? '';
-        $ipc = isset($data['ip']) ?? '';
-        $ipl = isset($latest['ip']) ?? '';
-        $passc = isset($data['pass']) ?? '';
-        $passl = isset($latest['pass']) ?? '';
-        $emc = isset($data['email']) ?? '';
-        $eml = isset($latest['email']) ?? '';
-        if (!is_null($latest) and TypeCodes::TYPE_COMMENT != $data['type'] and
-            (
-                $ipc == $ipl and
-                $unc == $unl and
-                $passc == $passl and
-                $emc == $eml and
-                intval($data['type']) == intval($latest['type']) and
-                intval($data['status']) == intval($latest['status']) and
-                intval($data['matchtype']) == intval($latest['matchtype']) and
-                $data['matchval'] == $latest['matchval']
-             )) {
+        $settings = $this->dbAccess->getSettings();
 
-            $this->incrementCount(intval($latest[$this->tableName . '_id']), $data['dt']);
+        if ('1' == $settings['roll-up-duplicates']) {
+
+            $latest = $this->getLatestRecord();
+            
+            if (!is_null($latest) and TypeCodes::TYPE_COMMENT != $data['type']) {
+                $unc = isset($data['username']) ?? '';
+                $unl = isset($latest['username']) ?? '';
+                $ipc = isset($data['ip']) ?? '';
+                $ipl = isset($latest['ip']) ?? '';
+                $passc = isset($data['pass']) ?? '';
+                $passl = isset($latest['pass']) ?? '';
+                $emc = isset($data['email']) ?? '';
+                $eml = isset($latest['email']) ?? '';
+                if (
+                    $ipc == $ipl and
+                    $unc == $unl and
+                    $passc == $passl and
+                    $emc == $eml and
+                    intval($data['type']) == intval($latest['type']) and
+                    intval($data['status']) == intval($latest['status']) and
+                    intval($data['matchtype']) == intval($latest['matchtype']) and
+                    $data['matchval'] == $latest['matchval']
+                ) {
+                    $this->incrementCount(intval($latest[$this->tableName . '_id']), $data['dt']);
+                } else {
+                    return parent::create($data);
+                }
+
+            } else {
+                return parent::create($data);
+            }
+
         } else {
             return parent::create($data);
         }

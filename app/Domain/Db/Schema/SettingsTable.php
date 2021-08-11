@@ -54,5 +54,6 @@ class SettingsTable extends Table
         $this->db->insert('settings', ['settings_id' => 'secret1', 'value' => 'Avengers21##^^'])->execute();
         $this->db->insert('settings', ['settings_id' => 'secret2', 'value' => 'Assemble21##^^'])->execute();
         $this->db->insert('settings', ['settings_id' => 'collect-password', 'value' => '1'])->execute();
+        $this->db->insert('settings', ['settings_id' => 'roll-up-duplicates', 'value' => '0'])->execute();
     }
 }
