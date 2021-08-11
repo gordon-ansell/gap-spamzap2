@@ -68,9 +68,14 @@ class IPLookupModel extends AbstractDbModel
 
         if ($this->hasEntry($ip)) {
             $owt = ($ow) ? 'true' : 'false';
-            $msg = sprintf("IPLookup table already has an entry for IP address '%s' (overwrite: %s).", $ip, $owt);
+            $msg = sprintf("IPLookup table already has an entry for IP address '%s' (overwrite: %s). Will try delete again.", $ip, $owt);
             app()->get('techlogmodel')->addError($msg);
-            throw new \Exception($msg);
+            $this->delete($ip);
+            if ($this->hasEntry($ip)) {
+                $msg1 = sprintf("IPLookup table still has an entry for IP address '%s' despite second delete. Don't know what to do.", $ip);
+                app()->get('techlogmodel')->addError($msg1);
+                throw new \Exception($msg1);
+            }
         }
 
         $result = null;
