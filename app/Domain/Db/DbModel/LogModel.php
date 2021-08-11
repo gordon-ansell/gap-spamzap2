@@ -556,16 +556,16 @@ class LogModel extends AbstractDbModel
         if ('1' == $settings['roll-up-duplicates']) {
 
             $latest = $this->getLatestRecord();
-            
+
             if (!is_null($latest) and TypeCodes::TYPE_COMMENT != $data['type']) {
-                $unc = isset($data['username']) ?? '';
-                $unl = isset($latest['username']) ?? '';
-                $ipc = isset($data['ip']) ?? '';
-                $ipl = isset($latest['ip']) ?? '';
-                $passc = isset($data['pass']) ?? '';
-                $passl = isset($latest['pass']) ?? '';
-                $emc = isset($data['email']) ?? '';
-                $eml = isset($latest['email']) ?? '';
+                $unc = $data['username'] ?? '';
+                $unl = $latest['username'] ?? '';
+                $ipc = $data['ip'] ?? '';
+                $ipl = $latest['ip'] ?? '';
+                $passc = $data['pass'] ?? '';
+                $passl = $latest['pass'] ?? '';
+                $emc = $data['email'] ?? '';
+                $eml = $latest['email'] ?? '';
                 if (
                     $ipc == $ipl and
                     $unc == $unl and
