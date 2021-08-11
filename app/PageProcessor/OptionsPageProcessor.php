@@ -165,6 +165,10 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "Roll up duplicate log entries with a count."]);
 
+            $form->addField('radioset', ['name' => 'ignore-no-account-failure', 'label' => 'Ignore Login Failures If No Account?', 'class' => 'radio', 
+                'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
+                'title' => "Ignore failed login attempts if the username does not exist."]);
+
         $form->addField('divclose', ['name' => 'row6close']);
 
         // End stuff.

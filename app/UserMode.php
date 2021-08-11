@@ -258,17 +258,25 @@ class UserMode extends PluginUser implements PluginUserInterface
      */
     public function preprocessLoginFailedAction(string $username, \WP_Error $error)
     {
-        $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
-        $data['matchtype'] = TypeCodes::MT_LOGIN_ERROR;
-        $data['matchval'] = strip_tags($error->get_error_message(), '<strong>');
-        $data['dt'] = $this->getDt();
-        $data['status'] = TypeCodes::STATUS_ERROR;
-        $data['username'] = $username;
-        $lm = $this->getApp()->get('logmodel');
-        $lm->create($data);
+        $userinfo = \get_user_by('login', $username);
 
-        \status_header(401);
-        \nocache_headers();
+        if (false === $userinfo and '1' == $this->settings['ignore-no-account-failure']) {
+            \status_header(401);
+            \nocache_headers();
+        } else {
+
+            $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+            $data['matchtype'] = TypeCodes::MT_LOGIN_ERROR;
+            $data['matchval'] = strip_tags($error->get_error_message(), '<strong>');
+            $data['dt'] = $this->getDt();
+            $data['status'] = TypeCodes::STATUS_ERROR;
+            $data['username'] = $username;
+            $lm = $this->getApp()->get('logmodel');
+            $lm->create($data);
+
+            \status_header(401);
+            \nocache_headers();
+        }
     }
 
     /**
@@ -283,16 +291,23 @@ class UserMode extends PluginUser implements PluginUserInterface
     public function preprocessAuthFilter($user, string $username, string $password)
     {         
         if (!isset($_GET['loggedout'])) {
-            $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
-            $checkBlock['username'] = $username;
-            $lm = $this->getApp()->get('logmodel');
-            if ('1' == $this->settings['collect-password'] and !empty($this->settings['secret1']) and !empty($this->settings['secret2'])) {
-                $checkBlock['pwd'] = $lm->cryptic($password, $this->settings['secret1'], $this->settings['secret2']);
-            }
-            list($status, $info) = $this->checker->doCheck($checkBlock);
-            if (false === $status) {
-                //return new \WP_Error('authorization_failed', 'Suspected trouble maker - go away');
-                \wp_die('Suspected trouble maker - go away');
+
+            $userinfo = \get_user_by('login', $username);
+
+            if (false === $userinfo and '1' == $this->settings['ignore-no-account-failure']) {
+                return $user;
+            } else {
+                $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+                $checkBlock['username'] = $username;
+                $lm = $this->getApp()->get('logmodel');
+                if ('1' == $this->settings['collect-password'] and !empty($this->settings['secret1']) and !empty($this->settings['secret2'])) {
+                    $checkBlock['pwd'] = $lm->cryptic($password, $this->settings['secret1'], $this->settings['secret2']);
+                }
+                list($status, $info) = $this->checker->doCheck($checkBlock);
+                if (false === $status) {
+                    //return new \WP_Error('authorization_failed', 'Suspected trouble maker - go away');
+                    \wp_die('Suspected trouble maker - go away');
+                }
             } 
         }
 
