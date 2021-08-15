@@ -19,6 +19,7 @@ use App\Domain\Db\DbModel\DomainBlockModel;
 use App\Domain\Db\DbModel\EmailBlockModel;
 use App\Domain\Db\DbModel\StringBlockModel;
 use App\Domain\Db\DbModel\IPBlockModel;
+use App\Domain\Db\DbModel\AuthErrorModel;
 use App\Domain\Db\DbModel\IPTempBlockModel;
 use App\Domain\Db\DbModel\IPAllowModel;
 use App\Domain\Db\DbModel\IPLookupModel;
@@ -53,6 +54,7 @@ class App extends WordpressApplication
         $this->registerSingleton('emailblockmodel', EmailBlockModel::class);
         $this->registerSingleton('stringblockmodel', StringBlockModel::class);
         $this->registerSingleton('ipblockmodel', IPBlockModel::class);
+        $this->registerSingleton('autherrormodel', AuthErrorModel::class);
         $this->registerSingleton('iptempblockmodel', IPTempBlockModel::class);
         $this->registerSingleton('ipallowmodel', IPAllowModel::class);
         $this->registerSingleton('iplookupmodel', IPLookupModel::class);

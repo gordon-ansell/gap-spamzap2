@@ -79,6 +79,7 @@ class TypeCodes
     const MT_IP_TEMP_BLOCK      =   18;
     const MT_DEL_RULE           =   19;
     const MT_EXPIRE_RULE        =   20;
+    const MT_EXCEEDS_AUTH       =   21;
 
     // MATCH type strings.
     const TYPESTRS_MT = [
@@ -102,6 +103,7 @@ class TypeCodes
         self::MT_IP_TEMP_BLOCK      => "IP (Temp) Blocked",
         self::MT_DEL_RULE           => "Delete Rule",
         self::MT_EXPIRE_RULE        => "Expire Rule",
+        self::MT_EXCEEDS_AUTH       => "Auth Errors Exceeded",
     ];
 
 }

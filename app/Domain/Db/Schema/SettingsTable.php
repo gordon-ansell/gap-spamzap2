@@ -56,5 +56,6 @@ class SettingsTable extends Table
         $this->db->insert('settings', ['settings_id' => 'collect-password', 'value' => '1'])->execute();
         $this->db->insert('settings', ['settings_id' => 'roll-up-duplicates', 'value' => '1'])->execute();
         $this->db->insert('settings', ['settings_id' => 'ignore-no-account-failure', 'value' => '1'])->execute();
+        $this->db->insert('settings', ['settings_id' => 'auth-warning-count', 'value' => '5'])->execute();
     }
 }

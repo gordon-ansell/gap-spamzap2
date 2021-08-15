@@ -165,11 +165,22 @@ class OptionsPageProcessor extends AbstractPageProcessor implements PageProcesso
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "Roll up duplicate log entries with a count."]);
 
+
+        $form->addField('divclose', ['name' => 'row6close']);
+
+        // Row seven.
+        $form->addField('divopen', ['name' => 'row7', 'class' => 'three-columns']);
+
             $form->addField('radioset', ['name' => 'ignore-no-account-failure', 'label' => 'Ignore Login Failures If No Account?', 'class' => 'radio', 
                 'options' => ['1' => 'Yes', '0' => 'No'], 'style' => 'width: 10em',
                 'title' => "Ignore failed login attempts if the username does not exist."]);
 
-        $form->addField('divclose', ['name' => 'row6close']);
+            $form->addField('inputtext', ['name' => 'auth-warning-count', 'label' => 'Auth Warning Count', 
+                'title' => "Number of auth attempts by same IP on same user to trigger warning.", 'style' => 'width: 10em'])
+                ->addValidator(new NumericBetweenValidator(['Auth warning count'], ['high' => 100, 'low' => 1]));
+
+        $form->addField('divclose', ['name' => 'row7close']);
+
 
         // End stuff.
         $form->addField('buttonsubmit', ['name' => 'submit', 'value' => 'Submit', 'style' => 'width: 10em']);

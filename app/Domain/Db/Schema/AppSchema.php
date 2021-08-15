@@ -28,6 +28,7 @@ class AppSchema extends Schema
         IPBlockTable::class => 'ipblock',
         IPTempBlockTable::class => 'iptempblock',
         IPAllowTable::class => 'ipallow',
+        AuthErrorTable::class => 'autherror',
         IPLookupTable::class => 'iplookup',
         DomainBlockTable::class => 'domainblock',
         EmailBlockTable::class => 'emailblock',

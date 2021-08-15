@@ -261,6 +261,8 @@ class UserMode extends PluginUser implements PluginUserInterface
         $userinfo = \get_user_by('login', $username);
 
         if (false === $userinfo and '1' == $this->settings['ignore-no-account-failure']) {
+            $this->updateAuthErrorCount($username);
+
             \status_header(401);
             \nocache_headers();
         } else {
@@ -277,6 +279,49 @@ class UserMode extends PluginUser implements PluginUserInterface
             \status_header(401);
             \nocache_headers();
         }
+    }
+
+    /**
+     * Update the auth error count.
+     * 
+     * @param   string  $username   User.
+     * 
+     * @return  void
+     */
+    protected function updateAuthErrorCount(string $username)
+    {
+        if (empty($username)) {
+            return;
+        }
+
+        $aem = $this->getApp()->get('autherrormodel');
+        $iplm = $this->getApp()->get('iplookupmodel');
+        $ip = IPAddress::getClientIp();
+        if ('::1' == $ip) {
+            $ip = '217.155.193.33';
+        }
+        $iplm->addLookup($ip);
+        $tc = $aem->addAuthError($ip, $username);
+
+        // Tell user?
+        if ($tc >= intval($this->settings['auth-warning-count'])) {
+            $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+            $checkBlock['username'] = $username;
+            list($status, $info) = $this->checker->doCheck($checkBlock);
+            if (false === $status) {
+                \wp_die('Suspected trouble maker - go away');
+            } else {
+                $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
+                $data['matchtype'] = TypeCodes::MT_EXCEEDS_AUTH;
+                $data['matchval'] = $ip . ' + ' . $username;
+                $data['dt'] = $this->getDt();
+                $data['status'] = TypeCodes::STATUS_ERROR;
+                $data['username'] = $username;
+                $lm = $this->getApp()->get('logmodel');
+                $lm->create($data);            
+            }
+        }
+
     }
 
     /**

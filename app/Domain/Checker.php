@@ -282,7 +282,7 @@ class Checker
                         return [false, null];
                     }
                 } else {
-                    if (false !== strpos($authorurl, $record['item'])) {
+                    if (false !== stripos($authorurl, $record['item'])) {
                         $logData = $data;
                         $logData['matchtype']   = TypeCodes::MT_DOM_AURL;
                         $logData['matchval'] = $record['item'];
@@ -308,7 +308,7 @@ class Checker
                         return [false, null];
                     }
                 } else {
-                    if (false !== strpos($emaildomain, $record['item'])) {
+                    if (false !== stripos($emaildomain, $record['item'])) {
                         $logData = $data;
                         $logData['matchtype']   = TypeCodes::MT_DOM_EMAIL;
                         $logData['matchval'] = $record['item'];
@@ -336,7 +336,7 @@ class Checker
                             return [false, null];
                         }
                     } else {
-                        if (false !== strpos($singleDomain, $record['item'])) {
+                        if (false !== stripos($singleDomain, $record['item'])) {
                             $logData = $data;
                             $logData['matchtype']   = TypeCodes::MT_DOM_COMMENT;
                             $logData['matchval'] = $record['item'];
@@ -351,7 +351,7 @@ class Checker
 
                 // Do an extra check on contacts.
                 if (TypeCodes::TYPE_CONTACT == $data['type']) {
-                    if (false !== strpos($comment, $record['item'])) {
+                    if (false !== stripos($comment, $record['item'])) {
                         $logData = $data;
                         $logData['matchtype']   = TypeCodes::MT_DOM_COMMENT;
                         $logData['matchval'] = $record['item'];
@@ -394,7 +394,7 @@ class Checker
                         return [false, null];
                     }
                 } else {
-                    if (false !== strpos($emailaddress, $record['item'])) {
+                    if (false !== stripos($emailaddress, $record['item'])) {
                         $logData = $data;
                         $logData['matchtype']   = TypeCodes::MT_EMAIL_BLOCK;
                         $logData['matchval'] = $record['item'];
@@ -431,7 +431,7 @@ class Checker
                         return [false, null];
                     }
                 } else {
-                    if (false !== strpos($comment, $record['item'])) {
+                    if (false !== stripos($comment, $record['item'])) {
                         $logData = $data;
                         $logData['matchtype']   = TypeCodes::MT_STRING_BLOCK_COM;
                         $logData['matchval'] = $record['item'];
@@ -457,7 +457,7 @@ class Checker
                         return [false, null];
                     }
                 } else {
-                    if (false !== strpos($username, $record['item'])) {
+                    if (false !== stripos($username, $record['item'])) {
                         $logData = $data;
                         $logData['matchtype']   = TypeCodes::MT_STRING_BLOCK_USER;
                         $logData['matchval'] = $record['item'];
