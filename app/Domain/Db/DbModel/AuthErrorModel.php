@@ -58,4 +58,23 @@ class AuthErrorModel extends AbstractDbModel
 
     }
 
+    /**
+     * Delete record for IP and user.
+     * 
+     * @param   string  $ip         IP address.
+     * @param   string  $username   Username.
+     * 
+     * @return  bool
+     */
+    public function deleteFor(string $ip, string $username)
+    {
+        $result = $this->getDb()
+            ->select($this->tableName)
+            ->where('ip', $ip)
+            ->where('username', $username)
+            ->fetchArray();
+
+        $this->delete($result[0][$this->tableName . '_id']);    
+    }
+
 }

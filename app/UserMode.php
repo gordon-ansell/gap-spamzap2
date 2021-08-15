@@ -309,6 +309,7 @@ class UserMode extends PluginUser implements PluginUserInterface
             $checkBlock['username'] = $username;
             list($status, $info) = $this->checker->doCheck($checkBlock);
             if (false === $status) {
+                $aem->deleteFor($ip, $username);
                 \wp_die('Suspected trouble maker - go away');
             } else {
                 $data = $this->checker->createCheckBlock(TypeCodes::TYPE_LOGIN);
@@ -320,6 +321,8 @@ class UserMode extends PluginUser implements PluginUserInterface
                 $lm = $this->getApp()->get('logmodel');
                 $lm->create($data);            
             }
+
+            $aem->deleteFor($ip, $username);
         }
 
     }
