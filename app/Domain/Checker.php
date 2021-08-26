@@ -150,7 +150,7 @@ class Checker
 
         // Lookup the IP.
         $lookupModel = $this->getApp()->get('iplookupmodel');
-        $lookupModel->addLookup($data['ip']);
+        $iplData = $lookupModel->addLookup($data['ip'], false, true);
 
         // --------------------------------------------------------------------------
         // Is block all set?
@@ -260,6 +260,7 @@ class Checker
         $commentDomains = [];
         if (!is_null($comment)) {
             $commentDomains = Domain::domainsFromString($comment);
+            $commentDomains = array_unique($commentDomains);
         }
 
         // Load the domains.
@@ -370,6 +371,31 @@ class Checker
                 }
             }
 
+            // ------- IP domain.
+            if (!empty($iplData['ipl_domain'])) {
+                if ('1' === $record['isregex']) {
+                    $re = '~' . stripslashes($record['item']) . '~i';
+                    if (1 === preg_match($re, $iplData['ipl_domain'])) {
+                        $logData = $data;
+                        $logData['matchtype']   = TypeCodes::MT_DOM_IP;
+                        $logData['matchval'] = stripslashes($record['item']);
+                        $logData['dt'] = $this->getDt();
+                        $logData['status'] = TypeCodes::STATUS_BLOCK;
+                        $lm->create($logData);
+                        return [false, null];
+                    }
+                } else {
+                    if (false !== stripos($iplData['ipl_domain'], $record['item'])) {
+                        $logData = $data;
+                        $logData['matchtype']   = TypeCodes::MT_DOM_IP;
+                        $logData['matchval'] = $record['item'];
+                        $logData['dt'] = $this->getDt();
+                        $logData['status'] = TypeCodes::STATUS_BLOCK;
+                        $lm->create($logData);
+                        return [false, null];
+                    }
+                }
+            }
         }
 
         // --------------------------------------------------------------------------

@@ -36,10 +36,11 @@ class IPLookupModel extends AbstractDbModel
      * 
      * @param   string        $ip         IP address.
      * @param   bool          $ow         Overwrite?
-     * @return  mixed                     Return the insert ID.
+     * @param   bool          $returnInfo Return the insert block?    
+     * @return  mixed                     Return the insert ID or data block.
      * @throws  DbModelException
      */
-    public function addLookup(string $ip, bool $ow = false)
+    public function addLookup(string $ip, bool $ow = false, bool $returnInfo = false)
     {
         // See if an entry already exists.
         if ($this->hasEntry($ip)) {
@@ -85,7 +86,11 @@ class IPLookupModel extends AbstractDbModel
             app()->get('techlogmodel')->addError("Exception %s in addLookup().", $e->getMessage());
         }
 
-        return $result;
+        if ($returnInfo) {
+            return $data;
+        } else {
+            return $result;
+        }
     }
 
 }
