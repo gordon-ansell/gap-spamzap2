@@ -214,7 +214,7 @@ class PluginUpdate extends PluginBase implements PluginUpdateInterface
         $response->last_updated = $this->githubAPIResult->published_at;
         $response->slug = $this->pluginBasename;
         $response->name  = $this->pluginData["Name"];
-        //$response->plugin_name  = $this->pluginData["Name"];
+        $response->plugin_name  = $this->pluginData["Name"];
         $response->version = $this->githubAPIResult->tag_name;
         $response->author = $this->pluginData["AuthorName"];
         $response->homepage = $this->pluginData["PluginURI"];
