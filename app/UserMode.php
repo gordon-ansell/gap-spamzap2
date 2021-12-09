@@ -170,6 +170,11 @@ class UserMode extends PluginUser implements PluginUserInterface
      */
     public function postRegistrationFilter(\WP_Error $errors, string $sanitized_user_login, string $user_email): \WP_Error
     {
+        if (false !== strpos($sanitized_user_login, 'http://') or false !== strpos($sanitized_user_login, 'https://')) {
+            $errors->add('email_error', $this->__('<strong>ERROR</strong>: Usernames cannot contain URLs.'));
+            return $errors;
+        }
+
         $checkBlock = $this->checker->createCheckBlock(TypeCodes::TYPE_REG);
 
         $checkBlock['username'] = $sanitized_user_login;

@@ -499,6 +499,15 @@ class Checker
         // --------------------------------------------------------------------------
         // If nothing has been blocked we just allow it.
         // --------------------------------------------------------------------------
+
+
+        if (!is_null($username) and (is_null($data['userid']) or "0" == $data['userid'])) {
+            $usrInfo = \get_user_by('login', $username);
+            if (false !== $usrInfo) {
+                $data['userid'] = $usrInfo->ID;
+            }
+        }
+
         if (TypeCodes::TYPE_LOGIN != $data['type']) {
             $logData = $data;
             $logData['matchtype']   = TypeCodes::MT_PASSED;
