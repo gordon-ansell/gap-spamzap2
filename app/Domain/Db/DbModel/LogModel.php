@@ -500,7 +500,7 @@ class LogModel extends AbstractDbModel
                 $userinfo = \get_user_by('login', strval($record['username2']));
                 if (false !== $userinfo) {
                     $tmp = $delUserLink;
-                    $tmp->setParam('href', $tmp->getParam('href') . strval($userinfo->ID));
+                    $tmp->setParam('href', $tmp->getParam('href') . $record['username2']);
                     $record['username2'] = $record['username2'] . $tmp->render($delUserIconR);
                 }
             }
