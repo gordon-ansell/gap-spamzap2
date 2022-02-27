@@ -349,11 +349,6 @@ class LogModel extends AbstractDbModel
             $emailBanIconR,
         ) = $this->createIcons($slug);
 
-        $delUserLink = new Html('a', [
-            'href' => $delUserUrl,
-            'target' => '_blank',
-            'title' => 'Delete this user.',
-        ]);
 
         // Matchtype class.
         //$matchTypeSpan = new Html('span', ['class' => 'matchtype']);
@@ -384,6 +379,12 @@ class LogModel extends AbstractDbModel
 
         $count = 1;
         foreach ($records as $record) {
+
+            $delUserLink = new Html('a', [
+                'href' => $delUserUrl,
+                'target' => '_blank',
+                'title' => 'Delete this user.',
+            ]);
 
             // New records.
             if ($count <= $logNew) {
@@ -497,7 +498,7 @@ class LogModel extends AbstractDbModel
                 $tmp->setParam('href', $tmp->getParam('href') . $record['email']);
                 $record['username2'] = $record['username2'] . $tmp->render($delUserIconR);
             } else {
-                $userinfo = \get_user_by('email', strval($record['email']));
+                $userinfo = \get_user_by('email', $record['email']);
                 if (false !== $userinfo) {
                     $tmp = $delUserLink;
                     $tmp->setParam('href', $tmp->getParam('href') . $userinfo->name);
