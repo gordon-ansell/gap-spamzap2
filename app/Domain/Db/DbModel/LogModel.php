@@ -494,7 +494,7 @@ class LogModel extends AbstractDbModel
             // User.
             if ('0' != strval($record['userid'])) {
                 $tmp = $delUserLink;
-                $tmp->setParam('href', $tmp->getParam('href') . strval($record['userid']));
+                $tmp->setParam('href', $tmp->getParam('href') . strval($record['username2']));
                 $record['username2'] = $record['username2'] . $tmp->render($delUserIconR);
             } else {
                 $userinfo = \get_user_by('login', strval($record['username2']));
@@ -698,9 +698,14 @@ class LogModel extends AbstractDbModel
 
             $sip = $seenip . '/' . $seen24;
 
+            $usernameTemp = is_null($record['username']) ? '' : $record['username'];
+            if (strlen($usernameTemp) > 40) {
+                $usernameTemp = substr($usernameTemp, 0, 37) + ' ...';
+            }
+
             $new = [
                 'dt'        =>  $this->convDt($record['dt']),
-                'username'  =>  is_null($record['username']) ? '' : $record['username'],   
+                'username'  =>  $usernameTemp,   
                 'userid'    =>  is_null($record['userid']) ? 0 : $record['userid'],   
                 'type'      =>  TypeCodes::TYPESTRS_TYPESHORT[$record['type']],
                 'matchtype' =>  TypeCodes::TYPESTRS_MT[$record['matchtype']],

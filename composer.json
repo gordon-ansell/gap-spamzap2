@@ -4,7 +4,8 @@
     "keywords": [
         "wordpress",
         "antispam",
-        "php"
+        "php",
+        "plugin"
     ],
     "homepage": "http://gordonansell.com/coding/gap-spamzap2",
     "license": "BSD-3-Clause",

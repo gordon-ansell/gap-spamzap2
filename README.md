@@ -1,2 +1,3 @@
-# gap-spamzap2
+# Spamzap2
+
 Wordpress Spam Handler
