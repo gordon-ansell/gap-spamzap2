@@ -701,7 +701,7 @@ class LogModel extends AbstractDbModel
 
             $usernameTemp = is_null($record['username']) ? '' : $record['username'];
             if (strlen($usernameTemp) > 40) {
-                $usernameTemp = substr($usernameTemp, 0, 37) + ' ...';
+                $usernameTemp = substr($usernameTemp, 0, 37) . ' ...';
             }
 
             $new = [
