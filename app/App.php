@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace App;
 
 use GreenFedora\Wordpress\WordpressApplication;
-use GreenFedora\Wordpress\WordpressApplicationInterface;
+use GreenFedora\Application\ApplicationInterface;
 
 use App\Domain\Db\DbAccess;
 use App\Domain\Db\DbModel\DomainBlockModel;
@@ -43,9 +43,9 @@ class App extends WordpressApplication
     /**
      * Initialisation.
      * 
-     * @return  WordpressApplicationInterface
+     * @return  ApplicationInterface
      */
-    public function init(): WordpressApplicationInterface
+    public function init(): ApplicationInterface
     {
         parent::init();
 
